@@ -42,16 +42,6 @@ public class FabricChat implements MCChat {
             Chat.sendPrivateMessageToSelfError("Text: " + Text.Serialization.toJsonString(text) + " Error: " + e.getMessage());
             e.printStackTrace();
         }
-
-        if (BBsentials.funConfig.swapActionBarChat && !BBsentials.funConfig.swapOnlyBBsentials) {
-            if (!actionbar) {
-                showActionBar(message);
-            }
-            else {
-                sendClientSideMessage(message);
-            }
-            return null;
-        }
         return toReturn;
     }
 
@@ -65,8 +55,8 @@ public class FabricChat implements MCChat {
     public void showActionBar(Message message) {
         MinecraftClient client = MinecraftClient.getInstance();
         if (client.player != null) {
-            if (BBsentials.funConfig.overwriteActionBar.isEmpty())
-                message = Message.of(BBsentials.funConfig.overwriteActionBar);
+            if (BBsentials.overwriteActionBar.isEmpty())
+                message = Message.of(BBsentials.overwriteActionBar);
             client.player.sendMessage(Text.Serialization.fromJson(message.getJson()), true);
         }
     }

@@ -113,10 +113,6 @@ public class Message {
         text = text.replaceFirst(replace, StringEscapeUtils.escapeJson(replaceWith));
     }
 
-    public boolean isFromReportedUser() {
-        return BBsentials.temporaryConfig.alreadyReported.contains(getPlayerName()) && !getPlayerName().isEmpty();
-    }
-
     public boolean contains(String string) {
         return getUnformattedString().contains(string);
     }

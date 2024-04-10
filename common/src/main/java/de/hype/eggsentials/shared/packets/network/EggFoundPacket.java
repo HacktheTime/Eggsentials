@@ -1,6 +1,6 @@
 package de.hype.eggsentials.shared.packets.network;
 
-import de.hype.eggsentials.client.common.client.updatelisteners.EggType;
+import de.hype.eggsentials.client.common.client.EggType;
 import de.hype.eggsentials.shared.constants.Islands;
 import de.hype.eggsentials.shared.objects.Position;
 

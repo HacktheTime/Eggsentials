@@ -20,7 +20,7 @@ allprojects {
 
     afterEvaluate {
         tasks.withType(AbstractArchiveTask::class) {
-            archiveBaseName.set("BBsentials-${project.name}")
+            archiveBaseName.set("Eggsentials-${project.name}")
             archiveVersion.set(libs.versions.modVersion)
         }
         tasks.withType(JavaCompile::class) {
@@ -29,7 +29,7 @@ allprojects {
         tasks.findByName("processResources")?.run {
             this as Copy
             from(rootProject.file("LICENSE")) {
-                rename { "BBsentials-LICENSE" }
+                rename { "Eggsentials-LICENSE" }
             }
         }
     }

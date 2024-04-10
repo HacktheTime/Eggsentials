@@ -4,19 +4,15 @@ import de.hype.eggsentials.client.common.chat.Chat;
 import de.hype.eggsentials.client.common.chat.Sender;
 import de.hype.eggsentials.client.common.client.commands.Commands;
 import de.hype.eggsentials.client.common.client.objects.ServerSwitchTask;
-import de.hype.eggsentials.client.common.client.socketAddons.AddonManager;
-import de.hype.eggsentials.client.common.client.updatelisteners.UpdateListenerManager;
 import de.hype.eggsentials.client.common.communication.BBsentialConnection;
-import de.hype.eggsentials.client.common.config.*;
-import de.hype.eggsentials.client.common.discordintegration.DiscordIntegration;
-import de.hype.eggsentials.client.common.discordintegration.GameSDKManager;
+import de.hype.eggsentials.client.common.config.BBServerConfig;
+import de.hype.eggsentials.client.common.config.DeveloperConfig;
+import de.hype.eggsentials.client.common.config.GeneralConfig;
+import de.hype.eggsentials.client.common.config.constants.ClickableArmorStand;
 import de.hype.eggsentials.client.common.mclibraries.CustomItemTexture;
-import de.hype.eggsentials.client.common.mclibraries.EnvironmentCore;
-import de.hype.eggsentials.client.common.objects.WaypointRoute;
 import de.hype.eggsentials.shared.constants.Islands;
+import de.hype.eggsentials.shared.objects.Position;
 
-import java.io.IOException;
-import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executors;
@@ -40,28 +36,25 @@ public class BBsentials {
     public static GeneralConfig generalConfig = new GeneralConfig();
     //All Other Configs
     public static DeveloperConfig developerConfig = new DeveloperConfig();
-    public static DiscordConfig discordConfig = new DiscordConfig();
-    public static SocketAddonConfig socketAddonConfig = new SocketAddonConfig();
-    public static ChChestConfig chChestConfig = new ChChestConfig();
-    public static FunConfig funConfig = new FunConfig();
-    public static TemporaryConfig temporaryConfig = new TemporaryConfig();
-    public static MiningEventConfig miningEventConfig = new MiningEventConfig();
-    public static PartyConfig partyConfig = new PartyConfig();
-    public static VisualConfig visualConfig = new VisualConfig();
-    public static SplashConfig splashConfig = new SplashConfig();
-    public static HUDConfig hudConfig = new HUDConfig();
-    public static GuildConfig guildConfig = new GuildConfig();
     public static BBServerConfig bbServerConfig = new BBServerConfig();
-    public static EnvironmentConfig environmentConfig = new EnvironmentConfig();
-    public static DiscordIntegration discordIntegration = new DiscordIntegration();
-    public static AddonManager addonManager;
-    public static GameSDKManager dcGameSDK;
+    public static Map<Islands, Map<EggType, Position>> islandEggMap = new HashMap<>();
+    public static String overwriteActionBar;
     private static boolean initialised = false;
     private static volatile ScheduledFuture<?> futureServerJoin;
     private static volatile boolean futureServerJoinRunning;
 
     public static void connectToBBserver() {
-        connectToBBserver(bbServerConfig.connectToBeta);
+        executionService.execute(() -> {
+            if (connection != null) {
+                connection.close();
+            }
+            bbthread = new Thread(() -> {
+                connection = new BBsentialConnection();
+                coms = new Commands();
+                connection.connect(bbServerConfig.bbServerURL, 5020);
+            });
+            bbthread.start();
+        });
     }
 
     /**
@@ -72,29 +65,9 @@ public class BBsentials {
     public static boolean conditionalReconnectToBBserver() {
         if (!connection.isConnected()) {
             Chat.sendPrivateMessageToSelfInfo("Reconnecting");
-            connectToBBserver(bbServerConfig.connectToBeta);
             return true;
         }
         return false;
-    }
-
-    public static void connectToBBserver(boolean beta) {
-        executionService.execute(() -> {
-            if (connection != null) {
-                connection.close();
-            }
-            bbthread = new Thread(() -> {
-                connection = new BBsentialConnection();
-                coms = new Commands();
-                if (beta) {
-                    connection.connect(bbServerConfig.bbServerURL, 5011);
-                }
-                else {
-                    connection.connect(bbServerConfig.bbServerURL, 5000);
-                }
-            });
-            bbthread.start();
-        });
     }
 
     /**
@@ -143,67 +116,21 @@ public class BBsentials {
     }
 
     public static void init() {
-        debugThread = new Thread(
-                EnvironmentCore.debug
-        );
-        debugThread.start();
-        debugThread.setName("Debug Thread");
-        if (GeneralConfig.isBingoTime() || bbServerConfig.overrideBingoTime) {
-            connectToBBserver();
-        }
-        try {
-            addonManager = new AddonManager();
-            UpdateListenerManager.init();
-            EnvironmentCore.mcevents.registerAll();
-        } catch (IOException e) {
-            Chat.sendPrivateMessageToSelfError(e.getMessage());
-            e.printStackTrace();
-        }
-        WaypointRoute.waypointRouteDirectory.mkdirs();
-        ServerSwitchTask.onServerJoinTask(() -> {
-            Islands island = EnvironmentCore.utils.getCurrentIsland();
-            String status = "Lobby Gaming";
-            if (island != null) status = "Playing in the " + island.getDisplayName();
-            BBsentials.discordIntegration.setNewStatus(status);
-        }, true);
-        if (discordConfig.useRichPresence) {
-            try {
-                dcGameSDK = new GameSDKManager();
-                if (discordConfig.useRichPresence) {
-                    dcGameSDK.updateActivity();
-                    ServerSwitchTask.onServerJoinTask(() -> dcGameSDK.updateActivity(), true);
-                }
-            } catch (Exception e) {
-                Chat.sendPrivateMessageToSelfError("Could not set Discord Rich Presence");
+
+    }
+
+    public static void addEggToIsland(Islands currentIsland, ClickableArmorStand eggType, Position pos) {
+        EggType type = null;
+        if (eggType == ClickableArmorStand.EVENING_EGG) type = EggType.EVENING;
+        if (eggType == ClickableArmorStand.MORNING_EGG) type = EggType.MORNING;
+        if (eggType == ClickableArmorStand.LUNCH_EGG) type = EggType.LUNCH;
+        if (type != null) {
+            Map<EggType, Position> eggsOnIs = islandEggMap.get(currentIsland);
+            if (eggsOnIs == null) {
+                eggsOnIs = new HashMap<>();
+                islandEggMap.put(currentIsland, eggsOnIs);
             }
-        }
-        if (funConfig.lowPlayTimeHelpers) {
-            ServerSwitchTask.onServerLeaveTask(() -> {
-                BBsentials.funConfig.lowPlaytimeHelperJoinDate = Instant.now();
-            }, true);
-            ServerSwitchTask.onServerJoinTask(() -> {
-                if (funConfig.lowPlaytimeHelperJoinDate == null) return;
-                long baseTimeAlready = Instant.now().getEpochSecond() - funConfig.lowPlaytimeHelperJoinDate.getEpochSecond();
-                String serverId = EnvironmentCore.utils.getServerId();
-                executionService.schedule(() -> {
-                    if (serverId.equals(EnvironmentCore.utils.getServerId())) {
-                        long currentTimeInLobby = Instant.now().getEpochSecond() - funConfig.lowPlaytimeHelperJoinDate.getEpochSecond();
-                        if (currentTimeInLobby < 47 && currentTimeInLobby > 43) {
-                        EnvironmentCore.utils.playsound("entity.horse.death");
-                        Chat.sendPrivateMessageToSelfError("45 Seconds over");
-                        }
-                    }
-                }, 45 - baseTimeAlready, TimeUnit.SECONDS);
-                executionService.schedule(() -> {
-                    if (serverId.equals(EnvironmentCore.utils.getServerId())) {
-                        long currentTimeInLobby = Instant.now().getEpochSecond() - funConfig.lowPlaytimeHelperJoinDate.getEpochSecond();
-                        if (currentTimeInLobby < 52 && currentTimeInLobby > 48) {
-                        EnvironmentCore.utils.playsound("entity.horse.death");
-                        Chat.sendPrivateMessageToSelfError("50 Seconds over");
-                        }
-                    }
-                }, 50 - baseTimeAlready, TimeUnit.SECONDS);
-            }, true);
+            eggsOnIs.put(type, pos);
         }
     }
 }

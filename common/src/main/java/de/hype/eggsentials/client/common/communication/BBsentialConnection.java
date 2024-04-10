@@ -2,22 +2,15 @@ package de.hype.eggsentials.client.common.communication;
 
 import de.hype.eggsentials.client.common.chat.Chat;
 import de.hype.eggsentials.client.common.client.BBsentials;
-import de.hype.eggsentials.client.common.client.SplashManager;
-import de.hype.eggsentials.client.common.client.updatelisteners.SplashStatusUpdateListener;
-import de.hype.eggsentials.client.common.client.updatelisteners.UpdateListenerManager;
-import de.hype.eggsentials.client.common.mclibraries.CustomItemTexture;
 import de.hype.eggsentials.client.common.mclibraries.EnvironmentCore;
 import de.hype.eggsentials.client.common.objects.InterceptPacketInfo;
-import de.hype.eggsentials.client.common.objects.Waypoints;
 import de.hype.eggsentials.environment.packetconfig.AbstractPacket;
 import de.hype.eggsentials.environment.packetconfig.PacketManager;
 import de.hype.eggsentials.environment.packetconfig.PacketUtils;
-import de.hype.eggsentials.shared.constants.*;
-import de.hype.eggsentials.shared.objects.ClientWaypointData;
+import de.hype.eggsentials.shared.constants.AuthenticationConstants;
+import de.hype.eggsentials.shared.constants.InternalReasonConstants;
 import de.hype.eggsentials.shared.objects.PunishmentData;
-import de.hype.eggsentials.shared.objects.SplashData;
-import de.hype.eggsentials.shared.packets.function.*;
-import de.hype.eggsentials.shared.packets.mining.MiningEventPacket;
+import de.hype.eggsentials.shared.packets.function.PlaySoundPacket;
 import de.hype.eggsentials.shared.packets.network.*;
 
 import javax.net.ssl.SSLContext;
@@ -40,7 +33,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 
 public class BBsentialConnection {
@@ -56,20 +48,6 @@ public class BBsentialConnection {
     public BBsentialConnection() {
         packetManager = new PacketManager(this);
     }
-
-
-    public static boolean isCommandSafe(String command) {
-        if (command.startsWith("/p ") || command.startsWith("/party ") || command.startsWith("/boop ") || command.startsWith("/msg ") || command.startsWith("/hub ")) {
-            return true;
-        }
-        else {
-            String emergencyMessage = "We detected that there was a command used which is not configured to be safe! " + command + " please check if its safe. IMMEDIATELY report this to the Admins and DeveloperAbstractConfig Hype_the_Time (@hackthetime). If it is not safe immediately remove BBsentials!!!!!!!! ";
-            System.out.println(emergencyMessage);
-            Chat.sendPrivateMessageToSelfFatal("§4" + emergencyMessage + "\n\n");
-        }
-        return false;
-    }
-
 
     public void connect(String serverIP, int serverPort) {
         // Enable SSL handshake debugging
@@ -192,33 +170,6 @@ public class BBsentialConnection {
         }
     }
 
-    public void sendMessage(String message) {
-        if (messageQueue != null) {
-            Chat.sendPrivateMessageToSelfDebug("BBs: " + message);
-            messageQueue.offer(message);
-        }
-        else {
-            Chat.sendPrivateMessageToSelfError("BB: It seems like the connection was lost. Please try to reconnect with /bbi reconnect");
-        }
-    }
-
-    public void sendHiddenMessage(String message) {
-        if (isConnected()) {
-            if (BBsentials.developerConfig.isDetailedDevModeEnabled()) {
-                Chat.sendPrivateMessageToSelfDebug("BBDev-s: " + message);
-            }
-            try {
-                if (socket.isConnected() && writer != null) {
-                    if (BBsentials.developerConfig.isDetailedDevModeEnabled())
-                        Chat.sendPrivateMessageToSelfDebug("BBHs: " + message);
-                    writer.println(message);
-                }
-            } catch (NullPointerException ignored) {
-            }
-        }
-    }
-
-
     public void onMessageReceived(String message) {
         if (!PacketUtils.handleIfPacket(this, message)) {
             if (message.startsWith("H-")) {
@@ -233,19 +184,6 @@ public class BBsentialConnection {
         //this does absolutely nothing. dummy for packet in packt manager
     }
 
-    public void splashHighlightItem(SplashData splash, long displayTimeInMilliseconds) {
-        CustomItemTexture toHighlightHub = new CustomItemTexture("customitems/splash_hub") {
-            @Override
-            public boolean isItem(String itemName, String nbt, Object item) {
-                return itemName.endsWith("Hub #" + splash.hubNumber);
-            }
-        };
-        BBsentials.executionService.schedule(() -> {
-            toHighlightHub.removeFromPool();
-        }, displayTimeInMilliseconds, TimeUnit.MILLISECONDS);
-    }
-
-
     public <E extends AbstractPacket> void sendPacket(E packet) {
         String packetName = packet.getClass().getSimpleName();
         String rawjson = PacketUtils.parsePacketToJson(packet);
@@ -259,78 +197,6 @@ public class BBsentialConnection {
             Chat.sendPrivateMessageToSelfError("BB: Couldn't send a " + packetName + "! did you get disconnected?");
         }
     }
-
-    public void onBroadcastMessagePacket(BroadcastMessagePacket packet) {
-        Chat.sendPrivateMessageToSelfImportantInfo("[A] §r[" + packet.prefix + "§r]§6 " + packet.username + ": " + packet.message);
-    }
-
-    public void onSplashNotifyPacket(SplashNotifyPacket packet) {
-        //influencing the delay in any way is disallowed!
-        int waitTime;
-        if (packet.splash.announcer.equals(BBsentials.generalConfig.getUsername()) && BBsentials.splashConfig.autoSplashStatusUpdates) {
-            Chat.sendPrivateMessageToSelfInfo("The Splash Update Statuses will be updatet automatically for you. If you need to do something manually go into Discord Splash Dashboard");
-            SplashStatusUpdateListener splashStatusUpdateListener = new SplashStatusUpdateListener(packet.splash);
-            UpdateListenerManager.splashStatusUpdateListener = splashStatusUpdateListener;
-            BBsentials.executionService.execute(splashStatusUpdateListener);
-        }
-        else {
-            SplashManager.addSplash(packet);
-            if (packet.splash.lessWaste) {
-                waitTime = Math.min(((EnvironmentCore.utils.getPotTime() * 1000) / 80), 25 * 1000);
-            }
-            else {
-                waitTime = 0;
-            }
-            BBsentials.executionService.schedule(() -> {
-                SplashManager.display(packet.splash.splashId);
-            }, waitTime, TimeUnit.MILLISECONDS);
-        }
-    }
-
-    public void onBingoChatMessagePacket(BingoChatMessagePacket packet) {
-        if (BBsentials.visualConfig.showBingoChat) {
-            Chat.sendPrivateMessageToSelfInfo("[" + packet.prefix + "§r] " + packet.username + ": " + packet.message);
-        }
-    }
-
-    public void onMiningEventPacket(MiningEventPacket packet) {
-        if (BBsentials.miningEventConfig.blockChEvents && packet.island.equals(Islands.CRYSTAL_HOLLOWS))
-            return;
-        if (!(BBsentials.miningEventConfig.allEvents)) {
-            if (packet.event.equals(MiningEvents.RAFFLE)) {
-                if (!BBsentials.miningEventConfig.raffle) return;
-            }
-            else if (packet.event.equals(MiningEvents.GOBLIN_RAID)) {
-                if (!BBsentials.miningEventConfig.goblinRaid) return;
-            }
-            else if (packet.event.equals(MiningEvents.MITHRIL_GOURMAND)) {
-                if (!BBsentials.miningEventConfig.mithrilGourmand) return;
-            }
-            else if (packet.event.equals(MiningEvents.BETTER_TOGETHER)) {
-                if (BBsentials.miningEventConfig.betterTogether.equals("none")) return;
-                if (BBsentials.miningEventConfig.betterTogether.equals(Islands.DWARVEN_MINES.getDisplayName()) && packet.island.equals(Islands.CRYSTAL_HOLLOWS))
-                    return;
-                if (BBsentials.miningEventConfig.betterTogether.equals(Islands.CRYSTAL_HOLLOWS.getDisplayName()) && packet.island.equals(Islands.DWARVEN_MINES))
-                    return;
-            }
-            else if (packet.event.equals(MiningEvents.DOUBLE_POWDER)) {
-                if (BBsentials.miningEventConfig.doublePowder.equals("none")) return;
-                if (BBsentials.miningEventConfig.doublePowder.equals(Islands.DWARVEN_MINES.getDisplayName()) && packet.island.equals(Islands.CRYSTAL_HOLLOWS))
-                    return;
-                if (BBsentials.miningEventConfig.doublePowder.equals(Islands.CRYSTAL_HOLLOWS.getDisplayName()) && packet.island.equals(Islands.DWARVEN_MINES))
-                    return;
-            }
-            else if (packet.event.equals(MiningEvents.GONE_WITH_THE_WIND)) {
-                if (BBsentials.miningEventConfig.goneWithTheWind.equals("none")) return;
-                if (BBsentials.miningEventConfig.goneWithTheWind.equals(Islands.DWARVEN_MINES.getDisplayName()) && packet.island.equals(Islands.CRYSTAL_HOLLOWS))
-                    return;
-                if (BBsentials.miningEventConfig.goneWithTheWind.equals(Islands.CRYSTAL_HOLLOWS.getDisplayName()) && packet.island.equals(Islands.DWARVEN_MINES))
-                    return;
-            }
-        }
-        Chat.sendPrivateMessageToSelfImportantInfo(packet.username + ": There is a " + packet.event.getDisplayName() + " in the " + packet.island.getDisplayName() + " now/soon.");
-    }
-
 
     public void onWelcomePacket(WelcomeClientPacket packet) {
         if (packet.success) {
@@ -369,11 +235,6 @@ public class BBsentialConnection {
                 EnvironmentCore.utils.showErrorScreen("Could not connect to the network. Reason: \n" + packet.displayMessage);
             else EnvironmentCore.utils.showErrorScreen(packet.displayMessage);
         }
-    }
-
-    public void onDisplayTellrawMessagePacket(DisplayTellrawMessagePacket packet) {
-        /*Chat.sendPrivateMessageToSelfText(Chat.createClientSideTellraw(packet.message));*/
-        Chat.sendPrivateMessageToSelfImportantInfo("You received a tellraw Packet but it got ignored due too there being no safety checks in this version.");
     }
 
     public void onInternalCommandPacket(InternalCommandPacket packet) {
@@ -428,20 +289,6 @@ public class BBsentialConnection {
         else if (packet.command.equals(InternalCommandPacket.INSTACRASH)) {
             System.out.println("BBsentials: InstaCrash triggered");
             EnvironmentCore.utils.systemExit(69);
-        }
-    }
-
-    public void onInvalidCommandFeedbackPacket(InvalidCommandFeedbackPacket packet) {
-        Chat.sendPrivateMessageToSelfError(packet.displayMessage);
-    }
-
-    public void onPartyPacket(PartyPacket packet) {
-        if (BBsentials.partyConfig.allowServerPartyInvite) {
-            if (packet.type.equals(PartyConstants.DISBAND)) Chat.sendCommand("/p disband");
-            else Chat.sendCommand("/p " + packet.type.toString().toLowerCase() + " " + String.join(" ", packet.users));
-        }
-        else {
-            Chat.sendPrivateMessageToSelfImportantInfo("Blocked a Party Command from the Server: " + packet.type + " : " + String.join(" ", packet.users));
         }
     }
 
@@ -557,54 +404,11 @@ public class BBsentialConnection {
         }
     }
 
-    public void onWaypointPacket(WaypointPacket packet) {
-        if (packet.operation.equals(WaypointPacket.Operation.ADD)) {
-            new Waypoints(packet.waypoint);
-        }
-        else if (packet.operation.equals(WaypointPacket.Operation.REMOVE)) {
-            try {
-                Waypoints.waypoints.get(packet.waypointId).removeFromPool();
-            } catch (Exception ignored) {
-
-            }
-        }
-        else if (packet.operation.equals(WaypointPacket.Operation.EDIT)) {
-            try {
-                Waypoints oldWaypoint = Waypoints.waypoints.get(packet.waypointId);
-                oldWaypoint.replaceWithNewWaypoint(packet.waypoint, packet.waypointId);
-            } catch (Exception ignored) {
-
-            }
-        }
-    }
-
-    public void onGetWaypointsPacket(GetWaypointsPacket packet) {
-        sendPacket(new GetWaypointsPacket(Waypoints.waypoints.values().stream().map((waypoint -> ((ClientWaypointData) waypoint))).collect(Collectors.toList())));
-    }
-
-    public void onCompletedGoalPacket(CompletedGoalPacket packet) {
-        if (!BBsentials.visualConfig.showCardCompletions && packet.completionType.equals(CompletedGoalPacket.CompletionType.CARD))
-
-            return;
-        if (!BBsentials.visualConfig.showGoalCompletions && packet.completionType.equals(CompletedGoalPacket.CompletionType.GOAL))
-            return;
-    }
-
     public void onPlaySoundPacket(PlaySoundPacket packet) {
         if (packet.streamFromUrl) EnvironmentCore.utils.streamCustomSound(packet.soundId, packet.durationInSeconds);
         else EnvironmentCore.utils.playsound(packet.soundId);
     }
 
-    public void onWantedSearchPacket(WantedSearchPacket packet) {
-        if (packet.serverId != null) if (packet.serverId.equals(EnvironmentCore.utils.getServerId()))
-            sendPacket(packet.preparePacketToReplyToThis(new WantedSearchPacket(packet.username, packet.serverId)));
-        if (packet.username != null) if (EnvironmentCore.utils.getPlayers().contains(packet.username))
-                sendPacket(packet.preparePacketToReplyToThis(new WantedSearchPacket(packet.username, packet.serverId)));
-    }
-
-    public void onSkyblockLobbyDataPacket(SkyblockLobbyDataPacket packet) {
-        packet.preparePacketToReplyToThis(new SkyblockLobbyDataPacket(EnvironmentCore.utils.getPlayers(), EnvironmentCore.utils.getLobbyTime(), EnvironmentCore.utils.getServerId(), EnvironmentCore.utils.getCurrentIsland()));
-    }
     public void onPunishedPacket(PunishedPacket packet) {
         for (PunishmentData data : packet.data) {
             if (!data.isActive()) continue;

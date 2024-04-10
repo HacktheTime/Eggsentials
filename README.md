@@ -16,5 +16,5 @@ Recent: mod menu, cloth config, fabric api
 
 The newest branch is usually hypeswap, but that may be unstable
 
-
-
+Too other developers. This is part of the BBsentials Code modified for Eggsentials. So this is why some stuff which is
+not used is here / the structure is here.

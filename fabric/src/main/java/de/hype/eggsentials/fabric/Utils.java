@@ -2,17 +2,10 @@ package de.hype.eggsentials.fabric;
 
 import com.mojang.authlib.exceptions.AuthenticationException;
 import de.hype.eggsentials.client.common.chat.Chat;
-import de.hype.eggsentials.client.common.client.BBsentials;
-import de.hype.eggsentials.client.common.client.updatelisteners.ChChestUpdateListener;
-import de.hype.eggsentials.client.common.client.updatelisteners.UpdateListenerManager;
-import de.hype.eggsentials.client.common.mclibraries.EnvironmentCore;
-import de.hype.eggsentials.client.common.objects.RouteNode;
 import de.hype.eggsentials.client.common.objects.Waypoints;
 import de.hype.eggsentials.fabric.objects.WorldRenderLastEvent;
-import de.hype.eggsentials.shared.constants.ChChestItem;
 import de.hype.eggsentials.shared.constants.EnumUtils;
 import de.hype.eggsentials.shared.constants.Islands;
-import de.hype.eggsentials.shared.objects.ChChestData;
 import de.hype.eggsentials.shared.objects.Position;
 import kotlin.Unit;
 import net.fabricmc.fabric.impl.command.client.ClientCommandInternals;
@@ -26,7 +19,6 @@ import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.toast.Toast;
 import net.minecraft.client.toast.ToastManager;
 import net.minecraft.client.util.ScreenshotRecorder;
-import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
@@ -51,7 +43,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 import java.util.function.Predicate;
@@ -99,22 +94,6 @@ public class Utils implements de.hype.eggsentials.client.common.mclibraries.Util
             } catch (Exception e) {
 
             }
-        }
-        try {
-            if (BBsentials.temporaryConfig.route != null) {
-                RenderInWorldContext.renderInWorld(event, (it) -> {
-                    RouteNode node = BBsentials.temporaryConfig.route.getCurrentNode();
-                    BlockPos pos = new BlockPos(node.coords.x, node.coords.y, node.coords.z);
-                    BBsentials.temporaryConfig.route.doNextNodeCheck(playerPos.toCenterPos().distanceTo(pos.toCenterPos()));
-                    it.color(node.color.getRed(), node.color.getGreen(), node.color.getBlue(), 0.2f);
-                    it.block(pos);
-                    it.color(node.color.getRed(), node.color.getGreen(), node.color.getBlue(), 1f);
-                    it.waypoint(pos, Text.of(node.name));
-
-                    return Unit.INSTANCE;
-                });
-            }
-        } catch (Exception ignored) {
         }
 //        WorldRenderLastEvent.Companion.publish(event);
     }
@@ -277,66 +256,6 @@ public class Utils implements de.hype.eggsentials.client.common.mclibraries.Util
         return players.stream().filter(predicate).toList();
     }
 
-    public List<String> toDisplayStringLeecherOverlay() {
-        List<String> stringList = new ArrayList();
-        boolean doPants = BBsentials.splashConfig.showMusicPantsUsers;
-        for (PlayerEntity player : getAllPlayers()) {
-            String prefix = "";
-            boolean display = false;
-            if (!isBingo(player)) {
-                display = true;
-            }
-            if (!isInRadius(MinecraftClient.getInstance().player, player, 5)) continue;
-            if (doPants) {
-                for (ItemStack armorItem : player.getArmorItems()) {
-                    try {
-                        if (armorItem.getNbt().get("ExtraAttributes").asString().contains("MUSIC_PANTS")) {
-                            prefix = "§4[♪]§r ";
-                            display = true;
-                        }
-                    } catch (Exception ignored) {
-                        continue;
-                    }
-                }
-            }
-
-            Integer leechPotions = 0;
-            for (Map.Entry<StatusEffect, StatusEffectInstance> entry : player.getActiveStatusEffects().entrySet()) {
-                StatusEffect effect = entry.getKey();
-                Integer amplifier = entry.getValue().getAmplifier();
-                if (effect == StatusEffects.STRENGTH && amplifier >= 7) {
-                    if (entry.getValue().getDuration() >= 60000) {
-                        leechPotions++;
-                    }
-                }
-                else if (effect == StatusEffects.JUMP_BOOST && amplifier >= 5) {
-                    if (entry.getValue().getDuration() >= 60000) {
-                        leechPotions++;
-                    }
-                }
-            }
-            if (leechPotions >= 2) {
-                prefix += "§4[⏳] §r";
-                display = true;
-            }
-            //32min left
-            //Potion: Night VisionAmplifier: 0 Duration: 2147473747
-            //Potion: StrengthAmplifier: 7 Duration: 39353
-            //Potion: Jump BoostAmplifier: 5 Duration: 39520
-            //Potion: HasteAmplifier: 3 Duration: 39379
-            //Potion: AbsorptionAmplifier: 0 Duration: 39368
-            if (display) {
-                if (prefix.isEmpty()) stringList.add(Text.Serialization.toJsonString(player.getDisplayName()));
-                else {
-                    String prefixAddition = Text.Serialization.toJsonString(Text.of(prefix));
-                    String normal = Text.Serialization.toJsonString(player.getDisplayName());
-                    stringList.add("[" + prefixAddition + "," + normal + "]");
-                }
-            }
-        }
-        return stringList;
-    }
-
     public boolean isSelfBingo() {
         assert MinecraftClient.getInstance().player != null;
         return Objects.requireNonNull(MinecraftClient.getInstance().player.getDisplayName()).getString().contains("Ⓑ");
@@ -437,79 +356,6 @@ public class Utils implements de.hype.eggsentials.client.common.mclibraries.Util
     }
 
     public void renderOverlays(DrawContext drawContext, float v) {
-        if (UpdateListenerManager.splashStatusUpdateListener.showOverlay()) {
-            // Set the starting position for the overlay
-            int x = 10;
-            int y = 10;
-
-            // Render each string in the list
-            List<String> splashLeechers = toDisplayStringLeecherOverlay();
-            List<PlayerEntity> allParticipiants = filterOut(getAllPlayers(), (player) -> isInRadius(MinecraftClient.getInstance().player, player, 5));
-            List<Text> toDisplay = new ArrayList<>();
-            toDisplay.add(Text.of("§6Total: " + allParticipiants.size() + " | Bingos: " + (allParticipiants.size() - splashLeechers.size()) + " | Leechers: " + splashLeechers.size()));
-
-            toDisplay.addAll(splashLeechers.stream().map(Text.Serialization::fromJson).toList());
-            for (Text text : toDisplay) {
-                drawContext.drawText(MinecraftClient.getInstance().textRenderer, text, x, y, 0xFFFFFF, true);
-                y += 10; // Adjust the vertical position for the next string
-            }
-        }
-        else if (UpdateListenerManager.chChestUpdateListener.showOverlay()) {
-            ChChestUpdateListener listener = UpdateListenerManager.chChestUpdateListener;
-
-            int x = 10;
-            int y = 15;
-            List<Text> toRender = new ArrayList<>();
-            if (listener.isHoster) {
-                String status = listener.lobby.getStatus();
-                switch (status) {
-                    case "Open":
-                        status = "§aOpen";
-                        break;
-                    case "Closed":
-                        status = "§4Closed";
-                        break;
-                    case "Full":
-                        status = "Full";
-                        break;
-                }
-                String warpInfo = "§cFull";
-                int playerThatCanBeWarped = EnvironmentCore.utils.getMaximumPlayerCount() - EnvironmentCore.utils.getPlayerCount();
-                if (playerThatCanBeWarped >= 1) {
-                    warpInfo = "§a(" + playerThatCanBeWarped + ")";
-                }
-
-                toRender.add(Text.of("§6Status:§0 " + status + "§6 | Slots: " + warpInfo + "§6"));
-                long closingTimeInMinutes = ((408000 - EnvironmentCore.utils.getLobbyTime()) * 50) / 60000;
-                if (closingTimeInMinutes <= 0) {
-                    toRender.add(Text.of("§4Lobby Closed"));
-                }
-                else {
-                    toRender.add(Text.of("§6Closing in " + closingTimeInMinutes / 60 + "h | " + closingTimeInMinutes % 60 + "m"));
-                }
-            }
-            else {
-                toRender.add(Text.of("§4Please Leave the Lobby after getting all the Chests to allow people to be warped in!"));
-                for (ChChestData chest : listener.getUnopenedChests()) {
-                    String author = "";
-                    if (!listener.lobby.contactMan.equalsIgnoreCase(chest.finder)) author = " [" + chest.finder + "]";
-                    toRender.add(Text.of("(" + chest.coords.toString() + ")" + author + ":"));
-                    Arrays.stream(chest.items).map(ChChestItem::getDisplayName).forEach((string) -> toRender.add(Text.of(string)));
-                }
-            }
-            for (Text text : toRender) {
-                drawContext.drawText(MinecraftClient.getInstance().textRenderer, text, x, y, 0xFFFFFF, true);
-                y += 10; // Adjust the vertical position for the next string
-            }
-        }
-        else if (BBsentials.funConfig.lowPlayTimeHelpers && BBsentials.funConfig.lowPlaytimeHelperJoinDate != null) {
-            long differece = ((Instant.now().getEpochSecond() - BBsentials.funConfig.lowPlaytimeHelperJoinDate.getEpochSecond()));
-            String colorCode = "§a";
-            if (differece > 50) colorCode = "§4§l";
-            else if (differece > 45) colorCode = "§4";
-            else if (differece > 40) colorCode = "§6";
-            drawContext.drawText(MinecraftClient.getInstance().textRenderer, Text.of(colorCode + "Time in Lobby: " + differece), 10, 10, 0xFFFFFF, true);
-        }
     }
 
     public Islands getCurrentIsland() {

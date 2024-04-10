@@ -2,15 +2,11 @@ package de.hype.eggsentials.fabric;
 
 import de.hype.eggsentials.client.common.chat.Chat;
 import de.hype.eggsentials.client.common.client.BBsentials;
-import de.hype.eggsentials.client.common.client.updatelisteners.UpdateListenerManager;
 import de.hype.eggsentials.client.common.config.constants.ClickableArmorStand;
 import de.hype.eggsentials.client.common.mclibraries.EnvironmentCore;
-import de.hype.eggsentials.shared.constants.Islands;
 import de.hype.eggsentials.shared.objects.Position;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
-import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
-import net.minecraft.block.ChestBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -19,7 +15,6 @@ import net.minecraft.nbt.NbtElement;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.EntityHitResult;
-import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
@@ -80,22 +75,6 @@ public class MCEvents implements de.hype.eggsentials.client.common.mclibraries.M
 
     @Override
     public void registerUseClick() {
-        UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
-            if (hitResult.getBlockPos() == null) return ActionResult.PASS;
-            if (hitResult.getType() == HitResult.Type.BLOCK) {
-                BlockPos blockPos = hitResult.getBlockPos();
-                if (world.getBlockState(blockPos).getBlock() instanceof ChestBlock) {
-                    try {
-                        if (utils.getCurrentIsland().equals(Islands.CRYSTAL_HOLLOWS)) {
-                            UpdateListenerManager.chChestUpdateListener.addOpenedChest(new Position(blockPos.getX(), blockPos.getY(), blockPos.getZ()));
-                        }
-                    } catch (Exception e) {
-                        return ActionResult.PASS;
-                    }
-                }
-            }
-            return ActionResult.PASS;
-        });
         UseEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
                     BBsentials.executionService.execute(() -> {
                         onArmorstandInteraction(player, world, hand, entity, hitResult);
@@ -111,7 +90,11 @@ public class MCEvents implements de.hype.eggsentials.client.common.mclibraries.M
                 if (itemStack.getItem() == Items.PLAYER_HEAD) {
                     String texture = itemStack.getNbt().getCompound("SkullOwner").getCompound("Properties").getList("textures", NbtElement.COMPOUND_TYPE).getCompound(0).getString("Value");
                     ClickableArmorStand armorStand = ClickableArmorStand.getFromTexture(texture);
-                    if (armorStand != null) Chat.sendPrivateMessageToSelfSuccess(armorStand.toString()+" was clicked");
+                    if (armorStand != null)
+                        Chat.sendPrivateMessageToSelfSuccess(armorStand.toString() + " was clicked");
+                    //TODO add code is here
+                    BlockPos pos = entity.getBlockPos();
+                    BBsentials.addEggToIsland(EnvironmentCore.utils.getCurrentIsland(), armorStand, new Position(pos.getX(), pos.getY(), pos.getZ()));
                 }
             });
         }

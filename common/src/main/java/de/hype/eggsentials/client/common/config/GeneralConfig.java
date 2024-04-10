@@ -24,15 +24,10 @@ public class GeneralConfig extends BBsentialsConfig {
 
     public transient int apiVersion = 1;
     public String[] bbsentialsRoles = {""};
-    public boolean useNumCodes = true;
-    public boolean doGuildChatCustomMenu = true;
-    public boolean doAllChatCustomMenu = true;
-    public boolean doPartyChatCustomMenu = true;
-    public boolean doDesktopNotifications = false;
-    public String nickname = "";
-    public String notifForMessagesType = "NONE";
+    public boolean useNumCodes = false;
     public JsonObject recentBingoData = null;
     public Set<String> profileIds = new HashSet<>();
+    public Boolean showNewEggFindigs = true;
 
     public GeneralConfig() {
         super(1);

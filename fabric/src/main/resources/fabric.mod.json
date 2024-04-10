@@ -4,25 +4,25 @@
   "version": "${version}",
   "name": "BBsentials",
   "icon": "logo.png",
-  "description": "Mod to connect to the BBsentials Network for Splashes and more",
+  "description": "Mod to connect to the BBsentials Network for the Choclate EGG event",
   "authors": [
     "Hype_the_Time/hackthetime"
   ],
   "contributors": ["hannibal2","nea89"],
   "contact": {
-    "homepage": "https://github.com/HacktheTime/BBsentials1.20",
-    "issues": "https://github.com/HacktheTime/BBsentials1.20/issues",
+    "homepage": "https://github.com/HacktheTime/Eggsentials",
+    "issues": "https://github.com/HacktheTime/Eggsentials.20/issues",
     "email": "s0844x76@duck.com",
-    "sources": "https://github.com/HacktheTime/BBsentials1.20"
+    "sources": "https://github.com/HacktheTime/Eggsentials"
   },
   "license": "Look on Github (Sources). a Modified \"CC BY-NC-ND 4.0\" License",
   "environment": "client",
   "entrypoints": {
     "client": [
-      "de.hype.bbsentials.fabric.ModInitialiser"
+      "de.hype.eggsentials.fabric.ModInitialiser"
     ],
     "modmenu": [
-      "de.hype.bbsentials.fabric.screens.ModMenueScreen"
+      "de.hype.eggsentials.fabric.screens.ModMenueScreen"
     ]
   },
   "depends": {
@@ -31,13 +31,13 @@
     "minecraft": "${minecraft_versionSupported}"
   },
   "mixins": [
-    "bbsentials.mixins.json"
+    "eggsentials.mixins.json"
   ],
   "custom": {
     "modmenu": {
       "links": {
-        "License": "https://github.com/HacktheTime/BBsentials1.20/blob/master/LICENSE",
-        "modmenu.discord":"discord.gg/qr5mPRq8uG"
+        "License": "https://github.com/HacktheTime/Eggsentials/blob/master/LICENSE",
+        "modmenu.discord": "discord.gg/hg9HgJGkxV"
       },
       "update_checker": true
     }
