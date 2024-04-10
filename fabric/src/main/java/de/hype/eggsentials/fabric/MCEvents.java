@@ -94,7 +94,7 @@ public class MCEvents implements de.hype.eggsentials.client.common.mclibraries.M
                         Chat.sendPrivateMessageToSelfSuccess(armorStand.toString() + " was clicked");
                     //TODO add code is here
                     BlockPos pos = entity.getBlockPos();
-                    BBsentials.addEggToIsland(EnvironmentCore.utils.getCurrentIsland(), armorStand, new Position(pos.getX(), pos.getY(), pos.getZ()));
+                    BBsentials.addEggToIsland(EnvironmentCore.utils.getCurrentIsland(), armorStand, new Position(pos.getX(), pos.getY() + 2, pos.getZ()));
                 }
             });
         }

@@ -1,6 +1,7 @@
 package de.hype.eggsentials.client.common.client;
 
 import de.hype.eggsentials.client.common.chat.Chat;
+import de.hype.eggsentials.client.common.chat.Message;
 import de.hype.eggsentials.client.common.chat.Sender;
 import de.hype.eggsentials.client.common.client.commands.Commands;
 import de.hype.eggsentials.client.common.client.objects.ServerSwitchTask;
@@ -10,10 +11,17 @@ import de.hype.eggsentials.client.common.config.DeveloperConfig;
 import de.hype.eggsentials.client.common.config.GeneralConfig;
 import de.hype.eggsentials.client.common.config.constants.ClickableArmorStand;
 import de.hype.eggsentials.client.common.mclibraries.CustomItemTexture;
+import de.hype.eggsentials.client.common.objects.Waypoints;
 import de.hype.eggsentials.shared.constants.Islands;
 import de.hype.eggsentials.shared.objects.Position;
+import de.hype.eggsentials.shared.objects.RenderInformation;
+import de.hype.eggsentials.shared.objects.WaypointData;
+import de.hype.eggsentials.shared.packets.network.EggFoundPacket;
 
+import java.awt.*;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -121,16 +129,43 @@ public class BBsentials {
 
     public static void addEggToIsland(Islands currentIsland, ClickableArmorStand eggType, Position pos) {
         EggType type = null;
-        if (eggType == ClickableArmorStand.EVENING_EGG) type = EggType.EVENING;
-        if (eggType == ClickableArmorStand.MORNING_EGG) type = EggType.MORNING;
-        if (eggType == ClickableArmorStand.LUNCH_EGG) type = EggType.LUNCH;
+        Color color = Color.RED;
+        if (eggType == ClickableArmorStand.EVENING_EGG) {
+            type = EggType.EVENING;
+            color = Color.ORANGE;
+        }
+        if (eggType == ClickableArmorStand.MORNING_EGG) {
+            type = EggType.MORNING;
+            color = Color.GREEN;
+        }
+        if (eggType == ClickableArmorStand.LUNCH_EGG) {
+            type = EggType.LUNCH;
+            color = Color.BLUE;
+        }
+        if (eggType == ClickableArmorStand.FAIRY_SOUL) {
+            type = EggType.LUNCH;
+            color = Color.PINK;
+        }
+        BBsentials.islandEggMap.computeIfAbsent(currentIsland, k -> new HashMap<>());
+        Position posKnown = BBsentials.islandEggMap.get(currentIsland).get(type);
+        if (posKnown != null && !posKnown.equals(pos)) {
+            Chat.sendPrivateMessageToSelfSuccess("send packet here→not known");
+            BBsentials.connection.sendPacket(new EggFoundPacket(BBsentials.generalConfig.getUsername(), currentIsland, pos, type));
+            //TODO send packet here and make invisible
+        }
+        else {
+
+        }
         if (type != null) {
             Map<EggType, Position> eggsOnIs = islandEggMap.get(currentIsland);
-            if (eggsOnIs == null) {
+            if (eggsOnIs != null) {
                 eggsOnIs = new HashMap<>();
                 islandEggMap.put(currentIsland, eggsOnIs);
+                eggsOnIs.put(type, pos);
             }
-            eggsOnIs.put(type, pos);
         }
+        List<RenderInformation> inf = new ArrayList<>();
+        inf.add(new RenderInformation(null, null));
+        new Waypoints(new WaypointData(pos, Message.of(eggType.toString()).getJson(), 1000, true, false, inf, color, false));
     }
 }

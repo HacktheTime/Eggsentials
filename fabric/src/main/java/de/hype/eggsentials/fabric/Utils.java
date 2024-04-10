@@ -87,7 +87,6 @@ public class Utils implements de.hype.eggsentials.client.common.mclibraries.Util
                             it.line(new Vec3d[]{event.camera.getPos().add(new Vec3d(cameraForward)), pos.toCenterPos()}, 3f);
                         }
                         it.doWaypointIcon(pos.toCenterPos(), waypoint.render, 32, 32);
-
                     }
                     return Unit.INSTANCE;
                 });

@@ -2,19 +2,12 @@ package de.hype.eggsentials.forge;
 
 import com.mojang.authlib.exceptions.AuthenticationException;
 import de.hype.eggsentials.client.common.chat.Chat;
-import de.hype.eggsentials.client.common.client.BBsentials;
-import de.hype.eggsentials.client.common.client.updatelisteners.ChChestUpdateListener;
-import de.hype.eggsentials.client.common.client.updatelisteners.UpdateListenerManager;
-import de.hype.eggsentials.client.common.mclibraries.EnvironmentCore;
-import de.hype.eggsentials.shared.constants.ChChestItem;
 import de.hype.eggsentials.shared.constants.EnumUtils;
 import de.hype.eggsentials.shared.constants.Islands;
-import de.hype.eggsentials.shared.objects.ChChestData;
 import de.hype.eggsentials.shared.objects.Position;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.BlockPos;
@@ -33,8 +26,6 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
@@ -245,89 +236,6 @@ public class Utils implements de.hype.eggsentials.client.common.mclibraries.Util
 
     @SubscribeEvent
     public void renderOverlays(RenderGameOverlayEvent.Text event) {
-        if (UpdateListenerManager.splashStatusUpdateListener.showOverlay()) {
-
-            // Set the starting position for the overlay
-            int x = 10;
-            int y = 10;
-
-            // Render each string in the list
-            List<EntityPlayer> splashLeechers = getSplashLeechingPlayersPlayerEntity();
-            List<EntityPlayer> allParticipants = filterOut(getAllPlayers(), (player) -> isInRadius(Minecraft.getMinecraft().thePlayer, player, 5));
-            List<EntityPlayer> musicPants = new ArrayList<>();
-
-            List<IChatComponent> toDisplay = new ArrayList<>();
-            toDisplay.add(new ChatComponentText("§6Total: " + allParticipants.size() + " | Bingos: " + (allParticipants.size() - splashLeechers.size()) + " | Leechers: " + splashLeechers.size()));
-            boolean doPants = BBsentials.splashConfig.showMusicPantsUsers;
-            for (EntityPlayer participant : allParticipants) {
-                if (doPants) {
-                    boolean hasPants = false;
-                    for (ItemStack armorItem : participant.inventory.armorInventory) {
-                        try {
-                            if (armorItem.getTagCompound().getCompoundTag("ExtraAttributes").getString("display").contains("MUSIC_PANTS")) {
-                                musicPants.add(participant);
-                                hasPants = true;
-                            }
-                        } catch (Exception ignored) {
-                            continue;
-                        }
-                    }
-                    if (hasPants) {
-                        String pantsAddition = IChatComponent.Serializer.componentToJson(new ChatComponentText("§4[♪]§ "));
-                        String normal = IChatComponent.Serializer.componentToJson(participant.getDisplayName());
-                        toDisplay.add(IChatComponent.Serializer.jsonToComponent("[" + pantsAddition + "," + normal + "]"));
-                    }
-                }
-            }
-            toDisplay.addAll(splashLeechers.stream().map(EntityPlayer::getDisplayName).collect(Collectors.toList()));
-            for (IChatComponent text : toDisplay) {
-                Minecraft.getMinecraft().fontRendererObj.drawString(text.getFormattedText(), x, y, 0xFFFFFF);
-                y += 10; // Adjust the vertical position for the next string
-            }
-        }
-        if (UpdateListenerManager.chChestUpdateListener.showOverlay()) {
-            ChChestUpdateListener listener = UpdateListenerManager.chChestUpdateListener;
-
-            int x = 10;
-            int y = 15;
-            List<IChatComponent> toRender = new ArrayList<>();
-            if (listener.isHoster) {
-                String status = listener.lobby.getStatus();
-                switch (status) { // Fix switch statement
-                    case "Open":
-                        status = "§aOpen";
-                        break;
-                    case "Closed":
-                        status = "§4Closed";
-                        break;
-                    case "Full":
-                        status = "Full";
-                        break;
-                }
-                String warpInfo = "§cFull";
-                int playerThatCanBeWarped = EnvironmentCore.utils.getMaximumPlayerCount() - EnvironmentCore.utils.getPlayerCount();
-                if (playerThatCanBeWarped >= 1) {
-                    warpInfo = "§a(" + playerThatCanBeWarped + ")";
-                }
-
-                toRender.add(new ChatComponentText("§6Status: §0" + status + "§6 | Slots: " + warpInfo + "§6"));
-                Date warpClosingDate = new Date(408000 - (EnvironmentCore.utils.getLobbyTime() * 50));
-                toRender.add(new ChatComponentText("§6Closing in " + warpClosingDate.getHours() + "h ," + warpClosingDate.getMinutes() + "m"));
-            }
-            else {
-                toRender.add(new ChatComponentText("§4Please Leave the Lobby after getting all the Chests to allow people to be warped in!"));
-                for (ChChestData chest : listener.getUnopenedChests()) {
-                    String author = "";
-                    if (!listener.lobby.contactMan.equalsIgnoreCase(chest.finder)) author = " [" + chest.finder + "]";
-                    toRender.add(new ChatComponentText("(" + chest.coords.toString() + ")" + author + ":")); // Fix stream to array
-                    Arrays.stream(chest.items).map(ChChestItem::getDisplayName).forEach((string) -> toRender.add(new ChatComponentText(string)));
-                }
-            }
-            for (IChatComponent text : toRender) {
-                Minecraft.getMinecraft().fontRendererObj.drawString(text.getFormattedText(), x, y, 0xFFFFFF);
-                y += 10; // Adjust the vertical position for the next string
-            }
-        }
     }
 
     public Islands getCurrentIsland() {

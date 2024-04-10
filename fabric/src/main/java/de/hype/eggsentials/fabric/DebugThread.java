@@ -46,7 +46,7 @@ public class DebugThread extends de.hype.eggsentials.client.common.client.DebugT
     }
 
     public void onNumpadCode() {
-        setWaypointsFromEntities(getEggs());
+//        setWaypointsFromEntities(getEggs());
 //        init();
         return;
     }
@@ -155,7 +155,7 @@ public class DebugThread extends de.hype.eggsentials.client.common.client.DebugT
         Waypoints.waypoints.clear();
         for (Entity entity : entities) {
             BlockPos pos = entity.getBlockPos();
-            new Waypoints(new WaypointData(new Position(pos.getX(),pos.getY(),pos.getZ()), Message.of("ddd").getJson(),1000,true,false, List.of(new RenderInformation(null,null)), true));
+            new Waypoints(new WaypointData(new Position(pos.getX(), pos.getY(), pos.getZ()), Message.of("ddd").getJson(), 1000, true, false, List.of(new RenderInformation(null, null)), false));
         }
     }
 }
