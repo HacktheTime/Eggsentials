@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "id": "bbsentials",
+  "version": "${version}",
+  "name": "BBsentials",
+  "icon": "logo.png",
+  "description": "Mod to connect to the BBsentials Network for Splashes and more",
+  "authors": [
+    "Hype_the_Time/hackthetime"
+  ],
+  "contributors": ["hannibal2","nea89"],
+  "contact": {
+    "homepage": "https://github.com/HacktheTime/BBsentials1.20",
+    "issues": "https://github.com/HacktheTime/BBsentials1.20/issues",
+    "email": "s0844x76@duck.com",
+    "sources": "https://github.com/HacktheTime/BBsentials1.20"
+  },
+  "license": "Look on Github (Sources). a Modified \"CC BY-NC-ND 4.0\" License",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "de.hype.bbsentials.fabric.ModInitialiser"
+    ],
+    "modmenu": [
+      "de.hype.bbsentials.fabric.screens.ModMenueScreen"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": ">=${fabric_api_version}",
+    "minecraft": "${minecraft_versionSupported}"
+  },
+  "mixins": [
+    "bbsentials.mixins.json"
+  ],
+  "custom": {
+    "modmenu": {
+      "links": {
+        "License": "https://github.com/HacktheTime/BBsentials1.20/blob/master/LICENSE",
+        "modmenu.discord":"discord.gg/qr5mPRq8uG"
+      },
+      "update_checker": true
+    }
+  }
+}

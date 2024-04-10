@@ -1,0 +1,11 @@
+{
+  "package": "de.hype.eggsentials.forge.mixin",
+  "refmap": "mixins.bbsentials.refmap.json",
+  "minVersion": "0.7",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+  ],
+  "client": [
+	"MixinRenderItem"
+  ]
+}
