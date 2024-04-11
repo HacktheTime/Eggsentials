@@ -198,13 +198,11 @@ public class BBsentialConnection {
         }
     }
 
-    public void onWelcomePacket(WelcomeClientPacket packet) {
+    public void onWelcomeEggPacket(WelcomeEggPacket packet) {
         if (packet.success) {
-            BBsentials.generalConfig.bbsentialsRoles = packet.roles;
+            if (BBsentials.generalConfig.getUsername().equals("Hype_the_Time")) BBsentials.generalConfig.bbsentialsRoles=new String[]{"dev","admin","mod"};
+
             Chat.sendPrivateMessageToSelfSuccess("Login Success");
-            if (!packet.motd.isEmpty()) {
-                Chat.sendPrivateMessageToSelfImportantInfo(packet.motd);
-            }
         }
         else {
             Chat.sendPrivateMessageToSelfError("Login Failed");
@@ -427,6 +425,11 @@ public class BBsentialConnection {
                 }
             }
         }
+    }
+
+    public void onEggFoundPacket(EggFoundPacket eggFoundPacket) {
+        if (!eggFoundPacket.finder.equals(BBsentials.generalConfig.getUsername())) return; //Self post not relevant
+        BBsentials.addEggToIsland(eggFoundPacket.island,eggFoundPacket.type,eggFoundPacket.coords);
     }
 
     public interface MessageReceivedCallback {

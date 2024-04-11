@@ -5,6 +5,9 @@ import com.mojang.brigadier.tree.RootCommandNode;
 import de.hype.eggsentials.client.common.chat.Chat;
 import de.hype.eggsentials.client.common.chat.Message;
 import de.hype.eggsentials.client.common.client.BBsentials;
+import de.hype.eggsentials.client.common.client.EggType;
+import de.hype.eggsentials.client.common.client.EggWaypoint;
+import de.hype.eggsentials.client.common.config.constants.ClickableArmorStand;
 import de.hype.eggsentials.client.common.mclibraries.EnvironmentCore;
 import de.hype.eggsentials.client.common.objects.Waypoints;
 import de.hype.eggsentials.shared.objects.Position;
@@ -20,6 +23,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.nbt.NbtElement;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.ArrayList;
@@ -46,7 +50,7 @@ public class DebugThread extends de.hype.eggsentials.client.common.client.DebugT
     }
 
     public void onNumpadCode() {
-//        setWaypointsFromEntities(getEggs());
+        setEggWaypointsFromEntities(getEggs());
 //        init();
         return;
     }
@@ -156,6 +160,25 @@ public class DebugThread extends de.hype.eggsentials.client.common.client.DebugT
         for (Entity entity : entities) {
             BlockPos pos = entity.getBlockPos();
             new Waypoints(new WaypointData(new Position(pos.getX(), pos.getY(), pos.getZ()), Message.of("ddd").getJson(), 1000, true, false, List.of(new RenderInformation(null, null)), false));
+        }
+    }
+
+    public void setEggWaypointsFromEntities(List<Entity> entities){
+        Waypoints.waypoints.clear();
+        for (Entity entity : entities) {
+            if (entity instanceof ArmorStandEntity) {
+                entity.getArmorItems().forEach(itemStack -> {
+                    if (itemStack.getItem() == Items.PLAYER_HEAD) {
+                        String texture = itemStack.getNbt().getCompound("SkullOwner").getCompound("Properties").getList("textures", NbtElement.COMPOUND_TYPE).getCompound(0).getString("Value");
+                        ClickableArmorStand armorStand = ClickableArmorStand.getFromTexture(texture);
+                        if (armorStand != null)
+                            Chat.sendPrivateMessageToSelfSuccess(armorStand.toString() + " was clicked");
+                        //TODO add code is here
+                        BlockPos pos = entity.getBlockPos();
+                        BBsentials.addEggToIsland(EnvironmentCore.utils.getCurrentIsland(), armorStand.getAsEgg(), new Position(pos.getX(), pos.getY() + 2, pos.getZ()));
+                    }
+                });
+            }
         }
     }
 }

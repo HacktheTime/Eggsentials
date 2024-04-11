@@ -1,5 +1,7 @@
 package de.hype.eggsentials.client.common.config.constants;
 
+import de.hype.eggsentials.client.common.client.EggType;
+
 public enum ClickableArmorStand {
     FAIRY_SOUL("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjk2OTIzYWQyNDczMTAwMDdmNmFlNWQzMjZkODQ3YWQ1Mzg2NGNmMTZjMzU2NWExODFkYzhlNmIyMGJlMjM4NyJ9fX0="),
     MORNING_EGG("ewogICJ0aW1lc3RhbXAiIDogMTcxMTQ2MjY0OTcwMSwKICAicHJvZmlsZUlkIiA6ICI3NGEwMzQxNWY1OTI0ZTA4YjMyMGM2MmU1NGE3ZjJhYiIsCiAgInByb2ZpbGVOYW1lIiA6ICJNZXp6aXIiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTVlMzYxNjU4MTlmZDI4NTBmOTg1NTJlZGNkNzYzZmY5ODYzMTMxMTkyODNjMTI2YWNlMGM0Y2M0OTVlNzZhOCIKICAgIH0KICB9Cn0"),
@@ -22,5 +24,22 @@ public enum ClickableArmorStand {
             }
         }
         return null;
+    }
+
+    public EggType getAsEgg() {
+        EggType type = null;
+        if (this == ClickableArmorStand.EVENING_EGG) {
+            type = EggType.EVENING;
+        }
+        if (this == ClickableArmorStand.MORNING_EGG) {
+            type = EggType.MORNING;
+        }
+        if (this == ClickableArmorStand.LUNCH_EGG) {
+            type = EggType.LUNCH;
+        }
+        if (this == ClickableArmorStand.FAIRY_SOUL) {
+            type = EggType.LUNCH;
+        }
+        return type;
     }
 }

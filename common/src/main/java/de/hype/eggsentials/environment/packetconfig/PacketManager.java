@@ -44,7 +44,9 @@ public class PacketManager {
         packets.add(new Packet<>(InternalCommandPacket.class, connection::onInternalCommandPacket));
 //        packets.add(new Packet<>(RequestConnectPacket.class, connection::dummy));
         packets.add(new Packet<>(SystemMessagePacket.class, connection::onSystemMessagePacket));
-        packets.add(new Packet<>(WelcomeClientPacket.class, connection::onWelcomePacket));
+        packets.add(new Packet<>(WelcomeEggPacket.class, connection::onWelcomeEggPacket));
+        packets.add(new Packet<>(EggFoundPacket.class, connection::onEggFoundPacket));
+
         packets.add(new Packet<>(RequestAuthentication.class, connection::onRequestAuthentication));
         packets.add(new Packet<>(PunishedPacket.class, connection::onPunishedPacket));
         packets.add(new Packet<>(PlaySoundPacket.class, connection::onPlaySoundPacket));

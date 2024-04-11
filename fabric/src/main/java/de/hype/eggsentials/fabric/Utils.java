@@ -2,6 +2,9 @@ package de.hype.eggsentials.fabric;
 
 import com.mojang.authlib.exceptions.AuthenticationException;
 import de.hype.eggsentials.client.common.chat.Chat;
+import de.hype.eggsentials.client.common.client.BBsentials;
+import de.hype.eggsentials.client.common.client.EggWaypoint;
+import de.hype.eggsentials.client.common.mclibraries.EnvironmentCore;
 import de.hype.eggsentials.client.common.objects.Waypoints;
 import de.hype.eggsentials.fabric.objects.WorldRenderLastEvent;
 import de.hype.eggsentials.shared.constants.EnumUtils;
@@ -43,10 +46,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 import java.util.function.Predicate;
@@ -71,7 +71,32 @@ public class Utils implements de.hype.eggsentials.client.common.mclibraries.Util
 
     public static void renderWaypoints(WorldRenderLastEvent event) {
         BlockPos playerPos = MinecraftClient.getInstance().player.getBlockPos();
-        List<Waypoints> waypoints = Waypoints.waypoints.values().stream().filter((waypoint) -> waypoint.visible).toList();
+//        List<Waypoints> waypoints = Waypoints.waypoints.values().stream().filter((waypoint) -> waypoint.visible).toList();
+//        if (!waypoints.isEmpty()) {
+//            try {
+//                RenderInWorldContext.renderInWorld(event, (it) -> {
+//                    for (Waypoints waypoint : waypoints) {
+//                        BlockPos pos = new BlockPos(waypoint.position.x, waypoint.position.y, waypoint.position.z);
+//                        if (playerPos.toCenterPos().distanceTo(pos.toCenterPos()) >= waypoint.renderDistance) continue;
+//                        it.color(waypoint.color.getRed(), waypoint.color.getGreen(), waypoint.color.getBlue(), 0.2f);
+//                        it.block(pos);
+//                        it.color(waypoint.color.getRed(), waypoint.color.getGreen(), waypoint.color.getBlue(), 1f);
+//                        it.waypoint(pos, Text.Serialization.fromJson(waypoint.jsonToRenderText));
+//                        if (waypoint.doTracer) {
+//                            Vector3f cameraForward = new Vector3f(0f, 0f, 1f).rotate(event.camera.getRotation());
+//                            it.line(new Vec3d[]{event.camera.getPos().add(new Vec3d(cameraForward)), pos.toCenterPos()}, 3f);
+//                        }
+//                        it.doWaypointIcon(pos.toCenterPos(), waypoint.render, 32, 32);
+//                    }
+//                    return Unit.INSTANCE;
+//                });
+//            } catch (Exception e) {
+//
+//            }
+//        }
+        Islands current = EnvironmentCore.utils.getCurrentIsland();
+        BBsentials.islandEggMap.putIfAbsent(current,k->k=new HashMap<>());
+        List<EggWaypoint> waypoints = BBsentials.islandEggMap.get(current).values().stream().filter((waypoint) -> waypoint.visible).toList();
         if (!waypoints.isEmpty()) {
             try {
                 RenderInWorldContext.renderInWorld(event, (it) -> {
