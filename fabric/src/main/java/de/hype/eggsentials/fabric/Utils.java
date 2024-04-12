@@ -95,7 +95,7 @@ public class Utils implements de.hype.eggsentials.client.common.mclibraries.Util
 //            }
 //        }
         Islands current = EnvironmentCore.utils.getCurrentIsland();
-        BBsentials.islandEggMap.putIfAbsent(current,k->k=new HashMap<>());
+        BBsentials.islandEggMap.putIfAbsent(current, new HashMap<>());
         List<EggWaypoint> waypoints = BBsentials.islandEggMap.get(current).values().stream().filter((waypoint) -> waypoint.visible).toList();
         if (!waypoints.isEmpty()) {
             try {

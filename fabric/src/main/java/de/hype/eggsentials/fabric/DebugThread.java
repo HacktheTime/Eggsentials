@@ -5,11 +5,12 @@ import com.mojang.brigadier.tree.RootCommandNode;
 import de.hype.eggsentials.client.common.chat.Chat;
 import de.hype.eggsentials.client.common.chat.Message;
 import de.hype.eggsentials.client.common.client.BBsentials;
-import de.hype.eggsentials.client.common.client.EggType;
 import de.hype.eggsentials.client.common.client.EggWaypoint;
 import de.hype.eggsentials.client.common.config.constants.ClickableArmorStand;
 import de.hype.eggsentials.client.common.mclibraries.EnvironmentCore;
 import de.hype.eggsentials.client.common.objects.Waypoints;
+import de.hype.eggsentials.shared.constants.Islands;
+import de.hype.eggsentials.shared.objects.EggType;
 import de.hype.eggsentials.shared.objects.Position;
 import de.hype.eggsentials.shared.objects.RenderInformation;
 import de.hype.eggsentials.shared.objects.WaypointData;
@@ -28,6 +29,7 @@ import net.minecraft.util.math.BlockPos;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -51,6 +53,7 @@ public class DebugThread extends de.hype.eggsentials.client.common.client.DebugT
 
     public void onNumpadCode() {
         setEggWaypointsFromEntities(getEggs());
+//        BBsentials.connectToBBserver();
 //        init();
         return;
     }
@@ -145,9 +148,9 @@ public class DebugThread extends de.hype.eggsentials.client.common.client.DebugT
                     if (entity instanceof ArmorStandEntity){
                         for (ItemStack armorItem : ((ArmorStandEntity) entity).getArmorItems()) {
                             if (armorItem.getItem()== Items.PLAYER_HEAD){
-                                if (!armorItem.getNbt().toString().contains("eyJ0ZXh")){
+//                                if (!armorItem.getNbt().toString().contains("eyJ0ZXh")){
                                     possiblyEgg.add(entity);
-                                }
+//                                }
                             }
                         }
                     }
@@ -165,6 +168,7 @@ public class DebugThread extends de.hype.eggsentials.client.common.client.DebugT
 
     public void setEggWaypointsFromEntities(List<Entity> entities){
         Waypoints.waypoints.clear();
+        Islands current = EnvironmentCore.utils.getCurrentIsland();
         for (Entity entity : entities) {
             if (entity instanceof ArmorStandEntity) {
                 entity.getArmorItems().forEach(itemStack -> {
@@ -174,8 +178,10 @@ public class DebugThread extends de.hype.eggsentials.client.common.client.DebugT
                         if (armorStand != null)
                             Chat.sendPrivateMessageToSelfSuccess(armorStand.toString() + " was clicked");
                         //TODO add code is here
-                        BlockPos pos = entity.getBlockPos();
-                        BBsentials.addEggToIsland(EnvironmentCore.utils.getCurrentIsland(), armorStand.getAsEgg(), new Position(pos.getX(), pos.getY() + 2, pos.getZ()));
+                        BlockPos blockPos = entity.getBlockPos();
+                        Position pos = new Position(blockPos.getX(), blockPos.getY() + 2, blockPos.getZ());
+                        EggWaypoint newPoint = new EggWaypoint(armorStand.getAsEgg(), current, pos, false);
+                        BBsentials.islandEggMap.getOrDefault(current, new HashMap<>()).put(EggType.FAIRY_SOUL, newPoint);
                     }
                 });
             }

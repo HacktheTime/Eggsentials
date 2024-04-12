@@ -8,9 +8,9 @@ import de.hype.eggsentials.client.common.communication.BBsentialConnection;
 import de.hype.eggsentials.client.common.config.BBServerConfig;
 import de.hype.eggsentials.client.common.config.DeveloperConfig;
 import de.hype.eggsentials.client.common.config.GeneralConfig;
-import de.hype.eggsentials.client.common.config.constants.ClickableArmorStand;
 import de.hype.eggsentials.client.common.mclibraries.CustomItemTexture;
 import de.hype.eggsentials.shared.constants.Islands;
+import de.hype.eggsentials.shared.objects.EggType;
 import de.hype.eggsentials.shared.objects.Position;
 import de.hype.eggsentials.shared.packets.network.EggFoundPacket;
 
@@ -52,7 +52,9 @@ public class BBsentials {
             bbthread = new Thread(() -> {
                 connection = new BBsentialConnection();
                 coms = new Commands();
-                connection.connect(bbServerConfig.bbServerURL, 5020);
+                connection.connect("localhost", 5020);
+//                connection.connect(bbServerConfig.bbServerURL, 5020);
+
             });
             bbthread.start();
         });
@@ -117,13 +119,12 @@ public class BBsentials {
     }
 
     public static void init() {
-
+        BBsentials.connectToBBserver();
     }
 
     public static void addEggToIsland(Islands currentIsland, EggType type, Position pos) {
-
         if (type != null) {
-            BBsentials.islandEggMap.computeIfAbsent(currentIsland, k -> new HashMap<>());
+            BBsentials.islandEggMap.putIfAbsent(currentIsland, new HashMap<>());
             Map<EggType, EggWaypoint> islandMaped = BBsentials.islandEggMap.get(currentIsland);
             EggWaypoint posKnown = islandMaped.get(type);
             EggWaypoint newPoint = new EggWaypoint(type, currentIsland, pos, true);

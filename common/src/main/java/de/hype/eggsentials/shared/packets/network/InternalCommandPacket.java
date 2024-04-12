@@ -9,9 +9,6 @@ import de.hype.eggsentials.environment.packetconfig.AbstractPacket;
  * See the Constants in code for explanations.
  */
 public class InternalCommandPacket extends AbstractPacket {
-    public static final String REQUEST_POT_DURATION = "potDuration?"; //Requests the left time of splash from the user.
-    public static final String SET_POT_DURATION = "setPotDuration"; //Used by the client to tell the server the remaining time. (On Splasher request)
-    public static final String SET_MOTD = "setMOTD"; //Admins can set the MOTD of the Network with this.
     public static final String GET_USER_INFO = "getUserInfo"; //Requests info about a user from the Server
     public static final String SHUTDOWN_SERVER = "shutdown"; //Shuts the Server down.
 

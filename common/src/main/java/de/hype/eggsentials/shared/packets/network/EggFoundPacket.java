@@ -1,12 +1,13 @@
 package de.hype.eggsentials.shared.packets.network;
 
-import de.hype.eggsentials.client.common.client.EggType;
+
 import de.hype.eggsentials.environment.packetconfig.AbstractPacket;
 import de.hype.eggsentials.shared.constants.Islands;
+import de.hype.eggsentials.shared.objects.EggType;
 import de.hype.eggsentials.shared.objects.Position;
 
 public class EggFoundPacket extends AbstractPacket {
-    public final String finder;
+    public String finder;
     public final Islands island;
     public final Position coords;
     public final EggType type;

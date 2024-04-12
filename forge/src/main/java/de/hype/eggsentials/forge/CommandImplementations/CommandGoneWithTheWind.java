@@ -3,7 +3,6 @@ package de.hype.eggsentials.forge.CommandImplementations;
 import de.hype.eggsentials.client.common.chat.Chat;
 import de.hype.eggsentials.client.common.mclibraries.EnvironmentCore;
 import de.hype.eggsentials.shared.constants.MiningEvents;
-import de.hype.eggsentials.shared.packets.mining.MiningEventPacket;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 

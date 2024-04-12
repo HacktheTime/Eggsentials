@@ -3,8 +3,11 @@ package de.hype.eggsentials.client.common.client;
 import de.hype.eggsentials.client.common.chat.Message;
 import de.hype.eggsentials.client.common.objects.Waypoints;
 import de.hype.eggsentials.shared.constants.Islands;
+import de.hype.eggsentials.shared.objects.EggType;
 import de.hype.eggsentials.shared.objects.Position;
 import de.hype.eggsentials.shared.objects.WaypointData;
+
+import java.util.HashMap;
 
 public class EggWaypoint extends Waypoints {
     public final EggType type;
@@ -35,5 +38,12 @@ public class EggWaypoint extends Waypoints {
     public void setFound(boolean found) {
         this.found = found;
         this.visible = !found;
+    }
+
+    /**
+     * Puts itself at the right place in the map
+     */
+    public void register() {
+        BBsentials.islandEggMap.getOrDefault(island, new HashMap<>()).put(EggType.FAIRY_SOUL, this);
     }
 }

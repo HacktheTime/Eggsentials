@@ -2,7 +2,6 @@ package de.hype.eggsentials.forge.CommandImplementations;
 
 import de.hype.eggsentials.client.common.chat.Chat;
 import de.hype.eggsentials.client.common.client.BBsentials;
-import de.hype.eggsentials.client.common.client.updatelisteners.UpdateListenerManager;
 import de.hype.eggsentials.client.common.mclibraries.EnvironmentCore;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;

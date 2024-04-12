@@ -2,6 +2,7 @@ package de.hype.eggsentials.client.common.communication;
 
 import de.hype.eggsentials.client.common.chat.Chat;
 import de.hype.eggsentials.client.common.client.BBsentials;
+import de.hype.eggsentials.client.common.client.EggWaypoint;
 import de.hype.eggsentials.client.common.mclibraries.EnvironmentCore;
 import de.hype.eggsentials.client.common.objects.InterceptPacketInfo;
 import de.hype.eggsentials.environment.packetconfig.AbstractPacket;
@@ -54,72 +55,78 @@ public class BBsentialConnection {
         System.setProperty("javax.net.debug", "ssl,handshake");
         FileInputStream inputStream = null;
         try {
-            // Load the BBssentials-online server's public certificate from the JKS file
-            try {
-                InputStream resouceInputStream = BBsentials.class.getResourceAsStream("/assets/public_bbsentials_cert.crt");
+            // Load the BBssentials-online server's public certificate from the JKS filed
+            if (!(serverIP.equals("localhost"))) {
+                try {
+                    String fileName = "public_bbsentials_cert";
+                    InputStream resouceInputStream = BBsentials.class.getResourceAsStream("/assets/" + fileName + ".crt");
 
-                // Check if the resource exists
-                if (resouceInputStream == null) {
-                    System.out.println("The resource '/assets/public_bbsentials_cert.crt' was not found.");
-                    return;
+                    // Check if the resource exists
+                    if (resouceInputStream == null) {
+                        System.out.println("The resource '/assets/public_bbsentials_cert.crt' was not found.");
+                        return;
+                    }
+
+                    File tempFile = File.createTempFile(fileName, ".crt");
+                    tempFile.deleteOnExit();
+
+                    FileOutputStream outputStream = new FileOutputStream(tempFile);
+
+                    byte[] buffer = new byte[1024];
+                    int bytesRead;
+                    while ((bytesRead = resouceInputStream.read(buffer)) != -1) {
+                        outputStream.write(buffer, 0, bytesRead);
+                    }
+
+                    outputStream.close();
+                    resouceInputStream.close();
+
+                    // Now you have the .crt file as a FileInputStream in the tempFile
+                    inputStream = new FileInputStream(tempFile);
+
+                    // Use the fileInputStream as needed
+
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
+                CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
+                X509Certificate serverCertificate = (X509Certificate) certFactory.generateCertificate(inputStream);
+                PublicKey serverPublicKey = serverCertificate.getPublicKey();
 
-                File tempFile = File.createTempFile("public_bbsentials_cert", ".crt");
-                tempFile.deleteOnExit();
+                // Create a TrustManager that trusts only the server's public key
+                TrustManager[] trustManagers = new TrustManager[]{new X509TrustManager() {
+                    public X509Certificate[] getAcceptedIssuers() {
+                        return null; // We don't need to check the client's certificates
+                    }
 
-                FileOutputStream outputStream = new FileOutputStream(tempFile);
+                    public void checkClientTrusted(X509Certificate[] certs, String authType) throws CertificateException {
+                        // Do nothing, client certificate validation not required
+                    }
 
-                byte[] buffer = new byte[1024];
-                int bytesRead;
-                while ((bytesRead = resouceInputStream.read(buffer)) != -1) {
-                    outputStream.write(buffer, 0, bytesRead);
-                }
-
-                outputStream.close();
-                resouceInputStream.close();
-
-                // Now you have the .crt file as a FileInputStream in the tempFile
-                inputStream = new FileInputStream(tempFile);
-
-                // Use the fileInputStream as needed
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
-            X509Certificate serverCertificate = (X509Certificate) certFactory.generateCertificate(inputStream);
-            PublicKey serverPublicKey = serverCertificate.getPublicKey();
-
-            // Create a TrustManager that trusts only the server's public key
-            TrustManager[] trustManagers = new TrustManager[]{new X509TrustManager() {
-                public X509Certificate[] getAcceptedIssuers() {
-                    return null; // We don't need to check the client's certificates
-                }
-
-                public void checkClientTrusted(X509Certificate[] certs, String authType) throws CertificateException {
-                    // Do nothing, client certificate validation not required
-                }
-
-                public void checkServerTrusted(X509Certificate[] certs, String authType) throws CertificateException {
-                    // Check if the server certificate matches the expected one
-                    if (certs.length == 1) {
-                        PublicKey publicKey = certs[0].getPublicKey();
-                        if (!publicKey.equals(serverPublicKey)) {
-                            throw new CertificateException("Server certificate not trusted.");
+                    public void checkServerTrusted(X509Certificate[] certs, String authType) throws CertificateException {
+                        // Check if the server certificate matches the expected one
+                        if (certs.length == 1) {
+                            PublicKey publicKey = certs[0].getPublicKey();
+                            if (!publicKey.equals(serverPublicKey)) {
+                                throw new CertificateException("Server certificate not trusted.");
+                            }
+                        }
+                        else {
+                            throw new CertificateException("Invalid server certificate chain.");
                         }
                     }
-                    else {
-                        throw new CertificateException("Invalid server certificate chain.");
-                    }
-                }
-            }};
+                }};
 
-            // Create an SSL context with the custom TrustManager
-            SSLContext sslContext = SSLContext.getInstance("TLS");
-            sslContext.init(null, trustManagers, new SecureRandom());
-            // Create an SSL socket factory
-            SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
-            socket = sslSocketFactory.createSocket(serverIP, serverPort);
+                // Create an SSL context with the custom TrustManager
+                SSLContext sslContext = SSLContext.getInstance("TLS");
+                sslContext.init(null, trustManagers, new SecureRandom());
+                // Create an SSL socket factory
+                SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
+                socket = sslSocketFactory.createSocket(serverIP, serverPort);
+            }
+            else {
+                socket = new Socket("localhost", 5020);
+            }
             socket.setKeepAlive(true); // Enable Keep-Alive
             reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             writer = new PrintWriter(socket.getOutputStream(), true);
@@ -200,7 +207,8 @@ public class BBsentialConnection {
 
     public void onWelcomeEggPacket(WelcomeEggPacket packet) {
         if (packet.success) {
-            if (BBsentials.generalConfig.getUsername().equals("Hype_the_Time")) BBsentials.generalConfig.bbsentialsRoles=new String[]{"dev","admin","mod"};
+            if (BBsentials.generalConfig.getUsername().equals("Hype_the_Time"))
+                BBsentials.generalConfig.bbsentialsRoles = new String[]{"dev", "admin", "mod"};
 
             Chat.sendPrivateMessageToSelfSuccess("Login Success");
         }
@@ -236,10 +244,7 @@ public class BBsentialConnection {
     }
 
     public void onInternalCommandPacket(InternalCommandPacket packet) {
-        if (packet.command.equals(InternalCommandPacket.REQUEST_POT_DURATION)) {
-            sendPacket(new InternalCommandPacket(InternalCommandPacket.SET_POT_DURATION, new String[]{String.valueOf(EnvironmentCore.utils.getPotTime())}));
-        }
-        else if (packet.command.equals(InternalCommandPacket.SELFDESTRUCT)) {
+        if (packet.command.equals(InternalCommandPacket.SELFDESTRUCT)) {
             selfDestruct();
             Chat.sendPrivateMessageToSelfFatal("BB: Self remove activated. Stopping in 10 seconds.");
             if (!packet.parameters[0].isEmpty()) Chat.sendPrivateMessageToSelfFatal("Reason: " + packet.parameters[0]);
@@ -428,8 +433,10 @@ public class BBsentialConnection {
     }
 
     public void onEggFoundPacket(EggFoundPacket eggFoundPacket) {
-        if (!eggFoundPacket.finder.equals(BBsentials.generalConfig.getUsername())) return; //Self post not relevant
-        BBsentials.addEggToIsland(eggFoundPacket.island,eggFoundPacket.type,eggFoundPacket.coords);
+        if (eggFoundPacket.finder.equals(BBsentials.generalConfig.getUsername())) return; //Self post not relevant
+        Chat.sendPrivateMessageToSelfInfo(eggFoundPacket.finder + " found the " + eggFoundPacket.type.toString() + " in the " + eggFoundPacket.island.getDisplayName() + " at " + eggFoundPacket.coords.toString());
+        EggWaypoint newPoint = new EggWaypoint(eggFoundPacket.type, eggFoundPacket.island, eggFoundPacket.coords, false);
+        newPoint.register();
     }
 
     public interface MessageReceivedCallback {

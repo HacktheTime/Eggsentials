@@ -12,12 +12,9 @@ import java.net.URL;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
 import java.util.Scanner;
 import java.util.Set;
-
-import static de.hype.eggsentials.client.common.client.BBsentials.generalConfig;
 
 
 public class GeneralConfig extends BBsentialsConfig {
@@ -32,14 +29,6 @@ public class GeneralConfig extends BBsentialsConfig {
     public GeneralConfig() {
         super(1);
         doInit();
-    }
-
-
-    public static boolean isBingoTime() {
-        Instant start = Instant.ofEpochSecond(generalConfig.recentBingoData.get("start").getAsLong());
-        Instant end = Instant.ofEpochSecond(generalConfig.recentBingoData.get("end").getAsLong());
-        Instant now = Instant.now();
-        return start.minus(12, ChronoUnit.HOURS).isBefore(now) && end.plus(2, ChronoUnit.HOURS).isAfter(now);
     }
 
     public boolean hasBBRoles(String roleName) {

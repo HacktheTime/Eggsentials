@@ -1,6 +1,6 @@
 package de.hype.eggsentials.client.common.config.constants;
 
-import de.hype.eggsentials.client.common.client.EggType;
+import de.hype.eggsentials.shared.objects.EggType;
 
 public enum ClickableArmorStand {
     FAIRY_SOUL("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjk2OTIzYWQyNDczMTAwMDdmNmFlNWQzMjZkODQ3YWQ1Mzg2NGNmMTZjMzU2NWExODFkYzhlNmIyMGJlMjM4NyJ9fX0="),
@@ -38,7 +38,7 @@ public enum ClickableArmorStand {
             type = EggType.LUNCH;
         }
         if (this == ClickableArmorStand.FAIRY_SOUL) {
-            type = EggType.LUNCH;
+            type = EggType.FAIRY_SOUL;
         }
         return type;
     }

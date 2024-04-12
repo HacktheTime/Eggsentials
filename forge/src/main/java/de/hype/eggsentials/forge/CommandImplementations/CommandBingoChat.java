@@ -1,7 +1,6 @@
 package de.hype.eggsentials.forge.CommandImplementations;
 
 
-import de.hype.eggsentials.shared.packets.network.BingoChatMessagePacket;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.ChatComponentText;
