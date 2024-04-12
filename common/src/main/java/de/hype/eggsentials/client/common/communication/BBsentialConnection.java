@@ -41,6 +41,7 @@ public class BBsentialConnection {
     public Thread messageReceiverThread;
     public Thread messageSenderThread;
     public List<InterceptPacketInfo> packetIntercepts = new ArrayList();
+    public boolean knownDisconnect = false;
     private Socket socket;
     private BufferedReader reader;
     private PrintWriter writer;
@@ -52,6 +53,7 @@ public class BBsentialConnection {
     }
 
     public void connect(String serverIP, int serverPort) {
+        knownDisconnect = false;
         // Enable SSL handshake debugging
         System.setProperty("javax.net.debug", "ssl,handshake");
         FileInputStream inputStream = null;
@@ -219,6 +221,7 @@ public class BBsentialConnection {
     }
 
     public void onDisconnectPacket(DisconnectPacket packet) {
+        knownDisconnect = true;
         if (EnvironmentCore.utils.isInGame()) {
             Chat.sendPrivateMessageToSelfError(packet.displayMessage);
             try {
@@ -416,7 +419,10 @@ public class BBsentialConnection {
     public void onPunishedPacket(PunishedPacket packet) {
         for (PunishmentData data : packet.data) {
             if (!data.isActive()) continue;
-            if (data.disconnectFromNetworkOnLoad) close();
+            if (data.disconnectFromNetworkOnLoad) {
+                close();
+                knownDisconnect = true;
+            }
             if (data.modSelfRemove) selfDestruct();
             if (!data.silent) {
                 Chat.sendPrivateMessageToSelfFatal("You have been " + data.type + " in the Eggsentials Network! Reason: " + data.reason);

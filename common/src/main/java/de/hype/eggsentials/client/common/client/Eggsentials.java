@@ -120,6 +120,11 @@ public class Eggsentials {
 
     public static void init() {
         Eggsentials.connectToBBserver();
+        ServerSwitchTask.onServerLeaveTask(() -> {
+            if (!connection.isConnected() && !connection.knownDisconnect) {
+                connectToBBserver();
+            }
+        });
     }
 
     public static void addEggToIsland(Islands currentIsland, EggType type, Position pos) {
