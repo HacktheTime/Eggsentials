@@ -7,7 +7,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 
-import static de.hype.eggsentials.client.common.client.BBsentials.connectToBBserver;
+import static de.hype.eggsentials.client.common.client.Eggsentials.connectToBBserver;
 
 
 

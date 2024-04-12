@@ -6,7 +6,7 @@ import de.hype.eggsentials.shared.constants.MiningEvents;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 
-import static de.hype.eggsentials.client.common.client.BBsentials.connection;
+import static de.hype.eggsentials.client.common.client.Eggsentials.connection;
 
 
 public class CommandGoneWithTheWind extends CommandBase {

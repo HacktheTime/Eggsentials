@@ -4,8 +4,8 @@ import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.RootCommandNode;
 import de.hype.eggsentials.client.common.chat.Chat;
 import de.hype.eggsentials.client.common.chat.Message;
-import de.hype.eggsentials.client.common.client.BBsentials;
 import de.hype.eggsentials.client.common.client.EggWaypoint;
+import de.hype.eggsentials.client.common.client.Eggsentials;
 import de.hype.eggsentials.client.common.config.constants.ClickableArmorStand;
 import de.hype.eggsentials.client.common.mclibraries.EnvironmentCore;
 import de.hype.eggsentials.client.common.objects.Waypoints;
@@ -53,7 +53,7 @@ public class DebugThread extends de.hype.eggsentials.client.common.client.DebugT
 
     public void onNumpadCode() {
         setEggWaypointsFromEntities(getEggs());
-//        BBsentials.connectToBBserver();
+//        Eggsentials.connectToBBserver();
 //        init();
         return;
     }
@@ -119,7 +119,7 @@ public class DebugThread extends de.hype.eggsentials.client.common.client.DebugT
         super.init();
         ClientTickEvents.START_CLIENT_TICK.register(i -> timerSinceLastTick.set(0));
         ClientTickEvents.END_CLIENT_TICK.register(i -> timerSinceLastTick.set(0));
-        BBsentials.executionService.scheduleAtFixedRate(() -> {
+        Eggsentials.executionService.scheduleAtFixedRate(() -> {
             timerSinceLastTick.getAndAdd(1);
             if (timerSinceLastTick.get() > 20 && MinecraftClient.getInstance().currentScreen == null) {
                 timerSinceLastTick.set(0);
@@ -181,7 +181,7 @@ public class DebugThread extends de.hype.eggsentials.client.common.client.DebugT
                         BlockPos blockPos = entity.getBlockPos();
                         Position pos = new Position(blockPos.getX(), blockPos.getY() + 2, blockPos.getZ());
                         EggWaypoint newPoint = new EggWaypoint(armorStand.getAsEgg(), current, pos, false);
-                        BBsentials.islandEggMap.getOrDefault(current, new HashMap<>()).put(EggType.FAIRY_SOUL, newPoint);
+                        Eggsentials.islandEggMap.getOrDefault(current, new HashMap<>()).put(EggType.FAIRY_SOUL, newPoint);
                     }
                 });
             }

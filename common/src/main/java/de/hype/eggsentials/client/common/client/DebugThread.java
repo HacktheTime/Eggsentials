@@ -37,7 +37,7 @@ public abstract class DebugThread implements Runnable {
     }
 
     public void init() {
-        connection = BBsentials.connection;
+        connection = Eggsentials.connection;
     }
 
     public abstract void onServerJoin();

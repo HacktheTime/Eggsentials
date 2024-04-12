@@ -1,7 +1,7 @@
 package de.hype.eggsentials.forge.CommandImplementations;
 
 import de.hype.eggsentials.client.common.chat.Chat;
-import de.hype.eggsentials.client.common.client.BBsentials;
+import de.hype.eggsentials.client.common.client.Eggsentials;
 import de.hype.eggsentials.client.common.mclibraries.EnvironmentCore;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
@@ -24,7 +24,7 @@ public class CommandGetLeechers extends CommandBase {
     public void processCommand(ICommandSender sender, String[] args) {
         UpdateListenerManager.splashStatusUpdateListener.showOverlay = true;
         Chat.sendPrivateMessageToSelfDebug("Leechers: " + String.join(", ", EnvironmentCore.utils.getSplashLeechingPlayers()));
-        BBsentials.executionService.schedule(() -> UpdateListenerManager.splashStatusUpdateListener.showOverlay = false, 2, TimeUnit.MINUTES);
+        Eggsentials.executionService.schedule(() -> UpdateListenerManager.splashStatusUpdateListener.showOverlay = false, 2, TimeUnit.MINUTES);
     }
 
     @Override

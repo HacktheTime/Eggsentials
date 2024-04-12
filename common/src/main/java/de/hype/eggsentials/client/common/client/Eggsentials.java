@@ -21,7 +21,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-public class BBsentials {
+public class Eggsentials {
     public static final Sender sender = new Sender();
     public static BBsentialConnection connection;
     public static Commands coms;
@@ -52,8 +52,8 @@ public class BBsentials {
             bbthread = new Thread(() -> {
                 connection = new BBsentialConnection();
                 coms = new Commands();
-                connection.connect("localhost", 5020);
-//                connection.connect(bbServerConfig.bbServerURL, 5020);
+//                connection.connect("localhost", 5020);
+                connection.connect(bbServerConfig.bbServerURL, 5020);
 
             });
             bbthread.start();
@@ -82,9 +82,9 @@ public class BBsentials {
         if (futureServerJoin != null) {
             futureServerJoin.cancel(false);
             if (futureServerJoinRunning)
-                Chat.sendPrivateMessageToSelfError("BB: You switched Lobbies so quickly that some things may weren't completed in time. Do not report this as bug!");
+                Chat.sendPrivateMessageToSelfError("Eggsentials: You switched Lobbies so quickly that some things may weren't completed in time. Do not report this as bug!");
             else
-                System.out.println("BB-Debug Output: Swapped Lobbies really quickly. Lobby Join events tasks were not executed.");
+                System.out.println("Eggsentials-Debug Output: Swapped Lobbies really quickly. Lobby Join events tasks were not executed.");
         }
         futureServerJoin = executionService.schedule(() -> {
             futureServerJoinRunning = true;
@@ -119,24 +119,25 @@ public class BBsentials {
     }
 
     public static void init() {
-        BBsentials.connectToBBserver();
+        Eggsentials.connectToBBserver();
     }
 
     public static void addEggToIsland(Islands currentIsland, EggType type, Position pos) {
         if (type != null) {
-            BBsentials.islandEggMap.putIfAbsent(currentIsland, new HashMap<>());
-            Map<EggType, EggWaypoint> islandMaped = BBsentials.islandEggMap.get(currentIsland);
+            Eggsentials.islandEggMap.putIfAbsent(currentIsland, new HashMap<>());
+            Map<EggType, EggWaypoint> islandMaped = Eggsentials.islandEggMap.get(currentIsland);
             EggWaypoint posKnown = islandMaped.get(type);
             EggWaypoint newPoint = new EggWaypoint(type, currentIsland, pos, true);
             if (posKnown == null || !posKnown.equals(newPoint)) {
-                Chat.sendPrivateMessageToSelfSuccess("send packet here→not known");
-                BBsentials.connection.sendPacket(new EggFoundPacket(BBsentials.generalConfig.getUsername(), currentIsland, pos, type));
-                //TODO send packet here and make invisible
+                if (developerConfig.devMode)
+                    Chat.sendPrivateMessageToSelfSuccess("unknown location found → sending packet");
+                Eggsentials.connection.sendPacket(new EggFoundPacket(Eggsentials.generalConfig.getUsername(), currentIsland, pos, type));
                 newPoint.setFound(true);
                 newPoint.removeFromPool();
                 islandMaped.put(type, newPoint);
             }
             else {
+                if (developerConfig.devMode) Chat.sendPrivateMessageToSelfSuccess("location already known");
                 posKnown.setFound(true);
                 posKnown.removeFromPool();
                 newPoint.setFound(true);

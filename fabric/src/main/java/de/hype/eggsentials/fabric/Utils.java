@@ -2,8 +2,8 @@ package de.hype.eggsentials.fabric;
 
 import com.mojang.authlib.exceptions.AuthenticationException;
 import de.hype.eggsentials.client.common.chat.Chat;
-import de.hype.eggsentials.client.common.client.BBsentials;
 import de.hype.eggsentials.client.common.client.EggWaypoint;
+import de.hype.eggsentials.client.common.client.Eggsentials;
 import de.hype.eggsentials.client.common.mclibraries.EnvironmentCore;
 import de.hype.eggsentials.client.common.objects.Waypoints;
 import de.hype.eggsentials.fabric.objects.WorldRenderLastEvent;
@@ -95,8 +95,8 @@ public class Utils implements de.hype.eggsentials.client.common.mclibraries.Util
 //            }
 //        }
         Islands current = EnvironmentCore.utils.getCurrentIsland();
-        BBsentials.islandEggMap.putIfAbsent(current, new HashMap<>());
-        List<EggWaypoint> waypoints = BBsentials.islandEggMap.get(current).values().stream().filter((waypoint) -> waypoint.visible).toList();
+        Eggsentials.islandEggMap.putIfAbsent(current, new HashMap<>());
+        List<EggWaypoint> waypoints = Eggsentials.islandEggMap.get(current).values().stream().filter((waypoint) -> waypoint.visible).toList();
         if (!waypoints.isEmpty()) {
             try {
                 RenderInWorldContext.renderInWorld(event, (it) -> {
@@ -196,7 +196,7 @@ public class Utils implements de.hype.eggsentials.client.common.mclibraries.Util
 
     public File getConfigPath() {
         File configDir = FabricLoader.getInstance().getConfigDir().toFile();
-        File bbsentialsDir = new File(configDir, "BBsentials");
+        File bbsentialsDir = new File(configDir, "Eggsentials");
 
         // Create the folder if it doesn't exist
         if (!bbsentialsDir.exists()) {

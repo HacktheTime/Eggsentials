@@ -1,6 +1,6 @@
 package de.hype.eggsentials.fabric.numpad;
 
-import de.hype.eggsentials.client.common.client.BBsentials;
+import de.hype.eggsentials.client.common.client.Eggsentials;
 import de.hype.eggsentials.fabric.screens.components.DoubleFieldWidget;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.NoticeScreen;
@@ -138,7 +138,7 @@ public class NumPadCodeConfigScreen extends Screen {
 
     @Override
     public boolean shouldCloseOnEsc() {
-        return BBsentials.developerConfig.devMode;
+        return Eggsentials.developerConfig.devMode;
     }
 
     @Override

@@ -2,7 +2,7 @@ package de.hype.eggsentials.fabric;
 
 import de.hype.eggsentials.client.common.chat.Chat;
 import de.hype.eggsentials.client.common.chat.Message;
-import de.hype.eggsentials.client.common.client.BBsentials;
+import de.hype.eggsentials.client.common.client.Eggsentials;
 import de.hype.eggsentials.client.common.mclibraries.MCChat;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.client.MinecraftClient;
@@ -21,7 +21,7 @@ public class FabricChat implements MCChat {
 //            chat.onEvent(new Message(Text.Serialization.toJsonString(message), message.getString()));
 //        });
         ClientReceiveMessageEvents.ALLOW_GAME.register((message, isActionBar) -> {
-            boolean block = (BBsentials.chat.processNotThreaded(new Message(Text.Serialization.toJsonString(message), message.getString()), isActionBar) == null);
+            boolean block = (Eggsentials.chat.processNotThreaded(new Message(Text.Serialization.toJsonString(message), message.getString()), isActionBar) == null);
             return !block;
         });
         ClientReceiveMessageEvents.MODIFY_GAME.register(this::prepareOnEvent);
@@ -55,8 +55,8 @@ public class FabricChat implements MCChat {
     public void showActionBar(Message message) {
         MinecraftClient client = MinecraftClient.getInstance();
         if (client.player != null) {
-            if (BBsentials.overwriteActionBar.isEmpty())
-                message = Message.of(BBsentials.overwriteActionBar);
+            if (Eggsentials.overwriteActionBar.isEmpty())
+                message = Message.of(Eggsentials.overwriteActionBar);
             client.player.sendMessage(Text.Serialization.fromJson(message.getJson()), true);
         }
     }

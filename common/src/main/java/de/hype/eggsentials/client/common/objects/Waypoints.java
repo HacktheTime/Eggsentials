@@ -1,7 +1,7 @@
 package de.hype.eggsentials.client.common.objects;
 
 import de.hype.eggsentials.client.common.api.Formatting;
-import de.hype.eggsentials.client.common.client.BBsentials;
+import de.hype.eggsentials.client.common.client.Eggsentials;
 import de.hype.eggsentials.client.common.client.objects.ServerSwitchTask;
 import de.hype.eggsentials.client.common.mclibraries.EnvironmentCore;
 import de.hype.eggsentials.shared.objects.ClientWaypointData;
@@ -49,7 +49,7 @@ public class Waypoints extends ClientWaypointData {
     }
 
     public Waypoints removeFromPool() {
-        BBsentials.onServerLeave.remove(removeRunnableId);
+        Eggsentials.onServerLeave.remove(removeRunnableId);
         return waypoints.remove(waypointId);
     }
 

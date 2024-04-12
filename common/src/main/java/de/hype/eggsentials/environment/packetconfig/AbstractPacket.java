@@ -1,7 +1,7 @@
 package de.hype.eggsentials.environment.packetconfig;
 
 import de.hype.eggsentials.client.common.chat.Chat;
-import de.hype.eggsentials.client.common.client.BBsentials;
+import de.hype.eggsentials.client.common.client.Eggsentials;
 import de.hype.eggsentials.client.common.communication.BBsentialConnection;
 import de.hype.eggsentials.shared.packets.network.InvalidCommandFeedbackPacket;
 
@@ -29,7 +29,7 @@ public class AbstractPacket {
 
     public boolean isApiSupported() {
         //int version = Core.getConfig().getVersion();
-        int version = BBsentials.generalConfig.getApiVersion();
+        int version = Eggsentials.generalConfig.getApiVersion();
         if (version >= apiVersionMin && version <= apiVersionMax) {
             return true;
         }

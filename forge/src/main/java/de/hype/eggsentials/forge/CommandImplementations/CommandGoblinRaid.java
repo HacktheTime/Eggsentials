@@ -7,7 +7,7 @@ import de.hype.eggsentials.shared.packets.mining.MiningEventPacket;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 
-import static de.hype.eggsentials.client.common.client.BBsentials.connection;
+import static de.hype.eggsentials.client.common.client.Eggsentials.connection;
 
 
 public class CommandGoblinRaid extends CommandBase {

@@ -1,7 +1,7 @@
 package de.hype.eggsentials.fabric;
 
 import com.mojang.brigadier.CommandDispatcher;
-import de.hype.eggsentials.client.common.client.BBsentials;
+import de.hype.eggsentials.client.common.client.Eggsentials;
 import de.hype.eggsentials.client.common.mclibraries.MCCommand;
 import de.hype.eggsentials.environment.packetconfig.AbstractPacket;
 import de.hype.eggsentials.shared.packets.network.InternalCommandPacket;
@@ -25,7 +25,7 @@ public class Commands implements MCCommand {
     }
 
     public static <T extends AbstractPacket> void sendPacket(T packet) {
-        BBsentials.connection.sendPacket(packet);
+        Eggsentials.connection.sendPacket(packet);
     }
 
     public void registerMain() {

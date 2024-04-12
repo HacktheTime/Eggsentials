@@ -58,14 +58,14 @@ public class Utils implements de.hype.eggsentials.client.common.mclibraries.Util
 
     public File getConfigPath() {
         File configDir = Minecraft.getMinecraft().mcDataDir;
-        File bbsentialsDir = new File(configDir, "BBsentials");
+        File bbsentialsDir = new File(configDir, "Eggsentials");
 
         // Create the folder if it doesn't exist
         if (!bbsentialsDir.exists()) {
             boolean created = bbsentialsDir.mkdirs();
             if (!created) {
                 // Handle the case where folder creation fails
-                throw new RuntimeException("Failed to create BBsentials folder");
+                throw new RuntimeException("Failed to create Eggsentials folder");
             }
         }
 

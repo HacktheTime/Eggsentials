@@ -1,6 +1,6 @@
 package de.hype.eggsentials.forge;
 
-import de.hype.eggsentials.client.common.client.BBsentials;
+import de.hype.eggsentials.client.common.client.Eggsentials;
 import de.hype.eggsentials.client.common.mclibraries.EnvironmentCore;
 import de.hype.eggsentials.forge.client.MoulConfig;
 import net.minecraftforge.common.MinecraftForge;
@@ -12,7 +12,7 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 @Mod(modid = "eggsentials", useMetadata = true)
 public class ForgeMod {
     static boolean alreadyInialised = false;
-    static BBsentials sentials;
+    static Eggsentials sentials;
     public static MoulConfig config = new MoulConfig();
 
     @Mod.EventHandler
@@ -20,8 +20,8 @@ public class ForgeMod {
         printLocation();
         EnvironmentCore core = EnvironmentCore.forge(new Utils(), new MCEvents(), new ForgeChat(), new Commands(), new Options(), new DebugThread());
         MinecraftForge.EVENT_BUS.register(this);
-        sentials = new BBsentials();
-        BBsentials.init();
+        sentials = new Eggsentials();
+        Eggsentials.init();
     }
     public void printLocation() {
 //        try {
@@ -41,7 +41,7 @@ public class ForgeMod {
     }
     @SubscribeEvent
     public void onClientConnected(PlayerEvent.PlayerRespawnEvent event) {
-        BBsentials.onServerJoin();
+        Eggsentials.onServerJoin();
     }
 
 }

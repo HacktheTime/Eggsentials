@@ -1,7 +1,7 @@
 package de.hype.eggsentials.forge.client;
 
 import com.google.gson.annotations.Expose;
-import de.hype.eggsentials.client.common.client.BBsentials;
+import de.hype.eggsentials.client.common.client.Eggsentials;
 import de.hype.eggsentials.client.common.config.ConfigManager;
 import de.hype.eggsentials.forge.client.categories.FirstCategory;
 import io.github.moulberry.moulconfig.Config;
@@ -18,7 +18,7 @@ public class MoulConfig extends Config {
 
     @Override
     public String getTitle() {
-        return "BBsentials " + BBsentials.generalConfig.getApiVersion();
+        return "Eggsentials " + Eggsentials.generalConfig.getApiVersion();
     }
 
     @Override

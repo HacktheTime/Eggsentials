@@ -5,7 +5,7 @@ package de.hype.eggsentials.client.common.config;
  * Sharing modified versions of this code ALWAYS requires Permission by the Project Owner (hackthetime)
  */
 
-import de.hype.eggsentials.client.common.client.BBsentials;
+import de.hype.eggsentials.client.common.client.Eggsentials;
 
 
 public class DeveloperConfig extends BBsentialsConfig {
@@ -42,6 +42,6 @@ public class DeveloperConfig extends BBsentialsConfig {
     }
 
     private boolean hasDevPerm() {
-        return BBsentials.generalConfig.hasBBRoles("dev");
+        return Eggsentials.generalConfig.hasBBRoles("dev");
     }
 }

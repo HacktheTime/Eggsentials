@@ -1,6 +1,6 @@
 package de.hype.eggsentials.client.common.mclibraries;
 
-import de.hype.eggsentials.client.common.client.BBsentials;
+import de.hype.eggsentials.client.common.client.Eggsentials;
 
 public abstract class CustomItemTexture {
     public static int customTextureId = 0;
@@ -28,12 +28,12 @@ public abstract class CustomItemTexture {
     }
 
     protected int addToPool() {
-        BBsentials.customItemTextures.put(textureId, this);
+        Eggsentials.customItemTextures.put(textureId, this);
         return textureId;
     }
 
     public CustomItemTexture removeFromPool() {
-        return BBsentials.customItemTextures.remove(textureId);
+        return Eggsentials.customItemTextures.remove(textureId);
     }
 
     /**

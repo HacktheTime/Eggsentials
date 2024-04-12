@@ -2,8 +2,8 @@ package de.hype.eggsentials.environment.packetconfig;
 
 import com.google.gson.Gson;
 import de.hype.eggsentials.client.common.chat.Chat;
-import de.hype.eggsentials.client.common.client.BBsentials;
 import de.hype.eggsentials.client.common.client.CustomGson;
+import de.hype.eggsentials.client.common.client.Eggsentials;
 import de.hype.eggsentials.client.common.communication.BBsentialConnection;
 import de.hype.eggsentials.client.common.objects.InterceptPacketInfo;
 
@@ -89,7 +89,8 @@ public class PacketUtils {
         for (Packet<? extends AbstractPacket> packet : manager.getPackets()) {
             if (!packetName.equals(packet.getClazz().getSimpleName())) continue;
             try {
-                if (BBsentials.developerConfig.isDetailedDevModeEnabled()) Chat.sendPrivateMessageToSelfDebug(packetName+":"+rawJson);
+                if (Eggsentials.developerConfig.isDetailedDevModeEnabled())
+                    Chat.sendPrivateMessageToSelfDebug(packetName + ":" + rawJson);
                 tryToProcessPacket(packet, rawJson);
                 return true;
             }catch (RuntimeException e){
@@ -111,7 +112,7 @@ public class PacketUtils {
         } catch (Exception e) {
             return true;
         }
-        List<InterceptPacketInfo> intercepts = BBsentials.connection.packetIntercepts;
+        List<InterceptPacketInfo> intercepts = Eggsentials.connection.packetIntercepts;
         List<Integer> indexes = new ArrayList<>();
         boolean cancelIntercept = false;
         boolean cancelMainExec = false;
@@ -134,7 +135,7 @@ public class PacketUtils {
                         }
                         else {
                             intercepts.remove(intercept);
-                            BBsentials.executionService.execute(() -> intercept.run(packet));
+                            Eggsentials.executionService.execute(() -> intercept.run(packet));
                         }
 
                     }
@@ -161,7 +162,7 @@ public class PacketUtils {
                             intercept.run(packet);
                         }
                         else {
-                            BBsentials.executionService.execute(() -> intercept.run(packet));
+                            Eggsentials.executionService.execute(() -> intercept.run(packet));
                         }
                     }
                     if (cancelIntercept) break;

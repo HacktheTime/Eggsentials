@@ -1,7 +1,7 @@
 package de.hype.eggsentials.forge.mixin;
 
 import de.hype.eggsentials.client.common.chat.Chat;
-import de.hype.eggsentials.client.common.client.BBsentials;
+import de.hype.eggsentials.client.common.client.Eggsentials;
 import de.hype.eggsentials.client.common.mclibraries.CustomItemTexture;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.WorldRenderer;
@@ -37,7 +37,7 @@ public abstract class MixinRenderItem {
     @Inject(method = "renderItemIntoGUI", at = @At("HEAD"), cancellable = true)
     private void overrideItemTextureForHubs(ItemStack stack, int x, int y, CallbackInfo ci) {
         try {
-            for (CustomItemTexture itemTexture : BBsentials.customItemTextures.values()) {
+            for (CustomItemTexture itemTexture : Eggsentials.customItemTextures.values()) {
                 if (itemTexture.isItem(stack.getDisplayName(), stack.getTagCompound().toString(), stack)) {
                     textureManager.bindTexture(new ResourceLocation(itemTexture.nameSpace, "textures/gui/sprites/" + itemTexture.renderTextureId + ".png"));
                     Gui.drawModalRectWithCustomSizedTexture(

@@ -1,6 +1,6 @@
 package de.hype.eggsentials.client.common.client.objects;
 
-import de.hype.eggsentials.client.common.client.BBsentials;
+import de.hype.eggsentials.client.common.client.Eggsentials;
 
 public class ServerSwitchTask {
     public static int counter = 0;
@@ -19,22 +19,22 @@ public class ServerSwitchTask {
 
     public static int onServerLeaveTask(Runnable runnable, boolean permanent){
         ServerSwitchTask task = new ServerSwitchTask(runnable,permanent);
-        BBsentials.onServerLeave.put(task.id,task);
+        Eggsentials.onServerLeave.put(task.id, task);
         return task.id;
     }
     public static int onServerLeaveTask(Runnable runnable){
         ServerSwitchTask task = new ServerSwitchTask(runnable);
-        BBsentials.onServerLeave.put(task.id,task);
+        Eggsentials.onServerLeave.put(task.id, task);
         return task.id;
     }
     public static int onServerJoinTask(Runnable runnable, boolean permanent){
         ServerSwitchTask task = new ServerSwitchTask(runnable,permanent);
-        BBsentials.onServerJoin.put(task.id,task);
+        Eggsentials.onServerJoin.put(task.id, task);
         return task.id;
     }
     public static int onServerJoinTask(Runnable runnable){
         ServerSwitchTask task = new ServerSwitchTask(runnable);
-        BBsentials.onServerJoin.put(task.id,task);
+        Eggsentials.onServerJoin.put(task.id, task);
         return task.id;
     }
     public int getId() {

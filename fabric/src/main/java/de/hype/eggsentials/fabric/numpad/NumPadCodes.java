@@ -3,7 +3,7 @@ package de.hype.eggsentials.fabric.numpad;
 import com.google.common.reflect.TypeToken;
 import de.hype.eggsentials.client.common.api.Formatting;
 import de.hype.eggsentials.client.common.chat.Message;
-import de.hype.eggsentials.client.common.client.BBsentials;
+import de.hype.eggsentials.client.common.client.Eggsentials;
 import de.hype.eggsentials.client.common.mclibraries.EnvironmentCore;
 import de.hype.eggsentials.fabric.DebugThread;
 import net.minecraft.client.MinecraftClient;
@@ -97,7 +97,7 @@ public class NumPadCodes {
                             actionbarText = Formatting.GOLD + enteredCode + " (" + count + ")";
                         }
                     }
-                    BBsentials.overwriteActionBar = actionbarText;
+                    Eggsentials.overwriteActionBar = actionbarText;
                     overidedActionBar = true;
                     EnvironmentCore.chat.showActionBar(Message.of(actionbarText));
                 }
@@ -118,7 +118,7 @@ public class NumPadCodes {
     public void addDefaultCodes(boolean all) {
         List<NumCode> defaultCodes = new ArrayList();
         defaultCodes.add((new NumCode("042", Formatting.DARK_BLUE, "", () -> MinecraftClient.getInstance().execute(() -> MinecraftClient.getInstance().setScreen(new NumPadCodesConfigScreen(this))))));
-        defaultCodes.add((new NumCode("0", Formatting.DARK_BLUE, "dev", () -> BBsentials.executionService.execute(() -> ((DebugThread) EnvironmentCore.debug).onNumpadCode()))));
+        defaultCodes.add((new NumCode("0", Formatting.DARK_BLUE, "dev", () -> Eggsentials.executionService.execute(() -> ((DebugThread) EnvironmentCore.debug).onNumpadCode()))));
         defaultCodes.add((new NumCode("04", "/visit portal_hub")));
         if (all) {
             numCodes.addAll(defaultCodes);
@@ -210,7 +210,7 @@ public class NumPadCodes {
                 toSaveCodes.add(numCode);
             }
         }
-        try (Writer writer = new FileWriter(new File(EnvironmentCore.utils.getConfigPath(), "BBsentials_Numpad_codes.json"))) {
+        try (Writer writer = new FileWriter(new File(EnvironmentCore.utils.getConfigPath(), "Eggsentials_Numpad_codes.json"))) {
             gson.toJson(toSaveCodes, writer);
         } catch (IOException e) {
             e.printStackTrace();
@@ -219,7 +219,7 @@ public class NumPadCodes {
 
 
     public void loadNumCodesFromFile() {
-        File file = new File(EnvironmentCore.utils.getConfigPath(), "BBsentials_Numpad_codes.json");
+        File file = new File(EnvironmentCore.utils.getConfigPath(), "Eggsentials_Numpad_codes.json");
         try (Reader reader = new FileReader(file)) {
             Type listType = new TypeToken<List<NumCode>>() {
             }.getType();

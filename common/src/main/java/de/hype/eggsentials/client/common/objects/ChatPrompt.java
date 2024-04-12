@@ -1,6 +1,6 @@
 package de.hype.eggsentials.client.common.objects;
 
-import de.hype.eggsentials.client.common.client.BBsentials;
+import de.hype.eggsentials.client.common.client.Eggsentials;
 
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -16,7 +16,7 @@ public class ChatPrompt {
 
 
     public void setResetTask(int timeBeforeReset) {
-        this.resetTask = BBsentials.executionService.schedule(() -> {
+        this.resetTask = Eggsentials.executionService.schedule(() -> {
             command=null;
         }, timeBeforeReset, TimeUnit.SECONDS);
     }

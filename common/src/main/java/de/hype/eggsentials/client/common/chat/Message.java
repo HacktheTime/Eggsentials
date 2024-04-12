@@ -1,7 +1,7 @@
 package de.hype.eggsentials.client.common.chat;
 
 import com.google.gson.JsonObject;
-import de.hype.eggsentials.client.common.client.BBsentials;
+import de.hype.eggsentials.client.common.client.Eggsentials;
 import org.apache.commons.lang3.StringEscapeUtils;
 
 public class Message {
@@ -37,7 +37,7 @@ public class Message {
     }
 
     public static Message tellraw(String json) {
-        json = json.replace("@username", BBsentials.generalConfig.getUsername());
+        json = json.replace("@username", Eggsentials.generalConfig.getUsername());
         return new Message(json, "");
     }
 
@@ -126,10 +126,10 @@ public class Message {
     }
 
     public void replyToUser(String message) {
-        if (isMsg()) BBsentials.sender.addImmediateSendTask("/r " + message);
-        else if (isFromParty()) BBsentials.sender.addImmediateSendTask("/pc @" + getPlayerName() + " " + message);
-        else if (isServerMessage()) BBsentials.sender.addImmediateSendTask("/ac @" + getPlayerName() + " " + message);
-        else if (isFromGuild()) BBsentials.sender.addImmediateSendTask("/gc @" + getPlayerName() + " " + message);
+        if (isMsg()) Eggsentials.sender.addImmediateSendTask("/r " + message);
+        else if (isFromParty()) Eggsentials.sender.addImmediateSendTask("/pc @" + getPlayerName() + " " + message);
+        else if (isServerMessage()) Eggsentials.sender.addImmediateSendTask("/ac @" + getPlayerName() + " " + message);
+        else if (isFromGuild()) Eggsentials.sender.addImmediateSendTask("/gc @" + getPlayerName() + " " + message);
     }
 
     @Override

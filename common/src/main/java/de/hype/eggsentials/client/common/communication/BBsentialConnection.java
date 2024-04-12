@@ -1,8 +1,8 @@
 package de.hype.eggsentials.client.common.communication;
 
 import de.hype.eggsentials.client.common.chat.Chat;
-import de.hype.eggsentials.client.common.client.BBsentials;
 import de.hype.eggsentials.client.common.client.EggWaypoint;
+import de.hype.eggsentials.client.common.client.Eggsentials;
 import de.hype.eggsentials.client.common.mclibraries.EnvironmentCore;
 import de.hype.eggsentials.client.common.objects.InterceptPacketInfo;
 import de.hype.eggsentials.environment.packetconfig.AbstractPacket;
@@ -30,6 +30,7 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -59,7 +60,7 @@ public class BBsentialConnection {
             if (!(serverIP.equals("localhost"))) {
                 try {
                     String fileName = "public_bbsentials_cert";
-                    InputStream resouceInputStream = BBsentials.class.getResourceAsStream("/assets/" + fileName + ".crt");
+                    InputStream resouceInputStream = Eggsentials.class.getResourceAsStream("/assets/" + fileName + ".crt");
 
                     // Check if the resource exists
                     if (resouceInputStream == null) {
@@ -141,7 +142,7 @@ public class BBsentialConnection {
                             onMessageReceived(message);
                         }
                         else {
-                            Chat.sendPrivateMessageToSelfError("BB: It seemed like you disconnected.");
+                            Chat.sendPrivateMessageToSelfError("Eggsentials: It seemed like you disconnected.");
                             try {
                                 Thread.sleep(10000);
                             } catch (Exception e) {
@@ -154,21 +155,21 @@ public class BBsentialConnection {
                 }
             });
             messageReceiverThread.start();
-            messageReceiverThread.setName("bb receiver thread");
+            messageReceiverThread.setName("Eggsentials receiver thread");
             // Start message sender thread
             messageSenderThread = new Thread(() -> {
                 try {
                     while (!Thread.interrupted()) {
                         String message = messageQueue.take();
-                        if (BBsentials.developerConfig.isDetailedDevModeEnabled())
-                            Chat.sendPrivateMessageToSelfDebug("BBs: " + message);
+                        if (Eggsentials.developerConfig.isDetailedDevModeEnabled())
+                            Chat.sendPrivateMessageToSelfDebug("Eggsnetials-s: " + message);
                         writer.println(message);
                     }
                 } catch (InterruptedException | NullPointerException ignored) {
                 }
             });
             messageSenderThread.start();
-            messageSenderThread.setName("bb sender thread");
+            messageSenderThread.setName("Eggsentials sender thread");
 
         } catch (IOException | NoSuchAlgorithmException | KeyManagementException e) {
             e.printStackTrace();
@@ -195,21 +196,21 @@ public class BBsentialConnection {
         String packetName = packet.getClass().getSimpleName();
         String rawjson = PacketUtils.parsePacketToJson(packet);
         if (isConnected() && writer != null) {
-            if (BBsentials.developerConfig.isDetailedDevModeEnabled() && !((packet.getClass().equals(RequestConnectPacket.class) && !BBsentials.bbServerConfig.useMojangAuth) && BBsentials.developerConfig.devSecurity)) {
-                Chat.sendPrivateMessageToSelfDebug("BBDev-sP: " + packetName + ": " + rawjson);
+            if (Eggsentials.developerConfig.isDetailedDevModeEnabled() && !((packet.getClass().equals(RequestConnectPacket.class) && !Eggsentials.bbServerConfig.useMojangAuth) && Eggsentials.developerConfig.devSecurity)) {
+                Chat.sendPrivateMessageToSelfDebug("EggsentialsDev-sP: " + packetName + ": " + rawjson);
             }
             writer.println(packetName + "." + rawjson);
         }
         else {
-            Chat.sendPrivateMessageToSelfError("BB: Couldn't send a " + packetName + "! did you get disconnected?");
+            Chat.sendPrivateMessageToSelfError("Eggsentials: Couldn't send a " + packetName + "! did you get disconnected?");
         }
     }
 
     public void onWelcomeEggPacket(WelcomeEggPacket packet) {
         if (packet.success) {
-            if (BBsentials.generalConfig.getUsername().equals("Hype_the_Time"))
-                BBsentials.generalConfig.bbsentialsRoles = new String[]{"dev", "admin", "mod"};
-
+            if (Eggsentials.generalConfig.getUsername().equals("Hype_the_Time"))
+                //Since the role auth stuff is not used clientside etc
+                Eggsentials.generalConfig.bbsentialsRoles = new String[]{"dev", "admin", "mod"};
             Chat.sendPrivateMessageToSelfSuccess("Login Success");
         }
         else {
@@ -221,17 +222,17 @@ public class BBsentialConnection {
         if (EnvironmentCore.utils.isInGame()) {
             Chat.sendPrivateMessageToSelfError(packet.displayMessage);
             try {
-                BBsentials.connection.close();
+                Eggsentials.connection.close();
             } catch (Exception ignored) {
             }
             for (int i = 0; i < packet.waitBeforeReconnect.length; i++) {
                 int finalI = i;
-                BBsentials.executionService.schedule(() -> {
+                Eggsentials.executionService.schedule(() -> {
                     if (finalI == 0) {
-                        BBsentials.connectToBBserver();
+                        Eggsentials.connectToBBserver();
                     }
                     else {
-                        BBsentials.conditionalReconnectToBBserver();
+                        Eggsentials.conditionalReconnectToBBserver();
                     }
                 }, (long) (packet.waitBeforeReconnect[i] + (Math.random() * packet.randomExtraDelay)), TimeUnit.SECONDS);
             }
@@ -246,14 +247,14 @@ public class BBsentialConnection {
     public void onInternalCommandPacket(InternalCommandPacket packet) {
         if (packet.command.equals(InternalCommandPacket.SELFDESTRUCT)) {
             selfDestruct();
-            Chat.sendPrivateMessageToSelfFatal("BB: Self remove activated. Stopping in 10 seconds.");
+            Chat.sendPrivateMessageToSelfFatal("Eggsentials-BB: Self remove activated. Stopping in 10 seconds.");
             if (!packet.parameters[0].isEmpty()) Chat.sendPrivateMessageToSelfFatal("Reason: " + packet.parameters[0]);
             EnvironmentCore.utils.playsound("block.anvil.destroy");
             for (int i = 0; i < 10; i++) {
                 int finalI = i;
-                BBsentials.executionService.schedule(() -> Chat.sendPrivateMessageToSelfFatal("BB: Time till crash: " + finalI), i, TimeUnit.SECONDS);
+                Eggsentials.executionService.schedule(() -> Chat.sendPrivateMessageToSelfFatal("BB: Time till crash: " + finalI), i, TimeUnit.SECONDS);
             }
-            throw new RuntimeException("BBsentials: Self Remove was triggered");
+            throw new RuntimeException("Eggsentials: Self Remove was triggered");
         }
         else if (packet.command.equals(InternalCommandPacket.PEACEFULLDESTRUCT)) {
             selfDestruct();
@@ -262,19 +263,19 @@ public class BBsentialConnection {
             EnvironmentCore.utils.playsound("block.anvil.destroy");
         }
         else if (packet.command.equals(InternalCommandPacket.HUB)) {
-            BBsentials.sender.addImmediateSendTask("/hub");
+            Eggsentials.sender.addImmediateSendTask("/hub");
         }
         else if (packet.command.equals(InternalCommandPacket.PRIVATE_ISLAND)) {
-            BBsentials.sender.addImmediateSendTask("/is");
+            Eggsentials.sender.addImmediateSendTask("/is");
         }
         else if (packet.command.equals(InternalCommandPacket.HIDDEN_HUB)) {
-            BBsentials.sender.addHiddenSendTask("/hub", 0);
+            Eggsentials.sender.addHiddenSendTask("/hub", 0);
         }
         else if (packet.command.equals(InternalCommandPacket.HIDDEN_PRIVATE_ISLAND)) {
-            BBsentials.sender.addHiddenSendTask("/is", 0);
+            Eggsentials.sender.addHiddenSendTask("/is", 0);
         }
         else if (packet.command.equals(InternalCommandPacket.CRASH)) {
-            Chat.sendPrivateMessageToSelfFatal("BB: Stopping in 10 seconds.");
+            Chat.sendPrivateMessageToSelfFatal("Eggsentials-BB: Stopping in 10 seconds.");
             if (!packet.parameters[0].isEmpty()) Chat.sendPrivateMessageToSelfFatal("Reason: " + packet.parameters[0]);
             Thread crashThread = new Thread(() -> {
                 EnvironmentCore.utils.playsound("block.anvil.destroy");
@@ -290,7 +291,7 @@ public class BBsentialConnection {
             crashThread.start();
         }
         else if (packet.command.equals(InternalCommandPacket.INSTACRASH)) {
-            System.out.println("BBsentials: InstaCrash triggered");
+            System.out.println("Eggsentials: InstaCrash triggered");
             EnvironmentCore.utils.systemExit(69);
         }
     }
@@ -309,11 +310,11 @@ public class BBsentialConnection {
 
     public void onRequestAuthentication(RequestAuthentication packet) {
         if (socket.getPort() == 5011) {
-            Chat.sendPrivateMessageToSelfSuccess("Logging into BBsentials-online (Beta Development Server)");
+            Chat.sendPrivateMessageToSelfSuccess("Logging into Eggsentials-online (Beta Development Server)");
             Chat.sendPrivateMessageToSelfImportantInfo("You may test here but do NOT Spam unless you have very good reasons. Spamming may still be punished");
         }
         else {
-            Chat.sendPrivateMessageToSelfSuccess("Logging into BBsentials-online");
+            Chat.sendPrivateMessageToSelfSuccess("Logging into Eggsentials-online");
         }
         try {
             Thread.sleep(1000);
@@ -328,13 +329,13 @@ public class BBsentialConnection {
         String clientRandom = serverBi.toString(16);
 
         String serverId = clientRandom + packet.serverIdSuffix;
-        if (BBsentials.bbServerConfig.useMojangAuth) {
+        if (Eggsentials.bbServerConfig.useMojangAuth) {
             EnvironmentCore.utils.mojangAuth(serverId);
-            RequestConnectPacket connectPacket = new RequestConnectPacket(BBsentials.generalConfig.getMCUUID(), clientRandom, BBsentials.generalConfig.getApiVersion(), AuthenticationConstants.MOJANG);
+            RequestConnectPacket connectPacket = new RequestConnectPacket(Eggsentials.generalConfig.getMCUUID(), clientRandom, Eggsentials.generalConfig.getApiVersion(), AuthenticationConstants.MOJANG);
             sendPacket(connectPacket);
         }
         else {
-            sendPacket(new RequestConnectPacket(BBsentials.generalConfig.getMCUUID(), BBsentials.bbServerConfig.apiKey, BBsentials.generalConfig.getApiVersion(), AuthenticationConstants.DATABASE));
+            sendPacket(new RequestConnectPacket(Eggsentials.generalConfig.getMCUUID(), Eggsentials.bbServerConfig.apiKey, Eggsentials.generalConfig.getApiVersion(), AuthenticationConstants.DATABASE));
         }
     }
 
@@ -379,16 +380,16 @@ public class BBsentialConnection {
             if (messageSenderThread != null) {
                 messageSenderThread.interrupt();
             }
-            if (BBsentials.bbthread != null) {
-                BBsentials.bbthread.interrupt();
+            if (Eggsentials.bbthread != null) {
+                Eggsentials.bbthread.interrupt();
             }
             if (writer != null) writer.close();
             if (reader != null) reader.close();
             if (socket != null) socket.close();
             messageQueue.clear();
-            if (BBsentials.bbthread != null) {
-                BBsentials.bbthread.join();
-                BBsentials.bbthread = null;
+            if (Eggsentials.bbthread != null) {
+                Eggsentials.bbthread.join();
+                Eggsentials.bbthread = null;
             }
             if (messageSenderThread != null) {
                 messageSenderThread.join();
@@ -418,7 +419,7 @@ public class BBsentialConnection {
             if (data.disconnectFromNetworkOnLoad) close();
             if (data.modSelfRemove) selfDestruct();
             if (!data.silent) {
-                Chat.sendPrivateMessageToSelfFatal("You have been " + data.type + " in the BBsentials Network! Reason: " + data.reason);
+                Chat.sendPrivateMessageToSelfFatal("You have been " + data.type + " in the Eggsentials Network! Reason: " + data.reason);
                 Chat.sendPrivateMessageToSelfFatal("Punishment Expiration Date: " + new Timestamp(data.till.getTime()).toLocalDateTime().toString());
                 if (data.modSelfRemove)
                     Chat.sendPrivateMessageToSelfFatal("You have been disallowed to use the mod, which is the reason it is automatically self removing itself!");
@@ -433,7 +434,11 @@ public class BBsentialConnection {
     }
 
     public void onEggFoundPacket(EggFoundPacket eggFoundPacket) {
-        if (eggFoundPacket.finder.equals(BBsentials.generalConfig.getUsername())) return; //Self post not relevant
+        if (eggFoundPacket.finder.equals(Eggsentials.generalConfig.getUsername())) return; //Self post not relevant
+        EggWaypoint wp = Eggsentials.islandEggMap.getOrDefault(eggFoundPacket.island, new HashMap<>()).get(eggFoundPacket.type);
+        if (wp != null) {
+            if (eggFoundPacket.coords.equals(wp.pos) && wp.isFound()) return;
+        }
         Chat.sendPrivateMessageToSelfInfo(eggFoundPacket.finder + " found the " + eggFoundPacket.type.toString() + " in the " + eggFoundPacket.island.getDisplayName() + " at " + eggFoundPacket.coords.toString());
         EggWaypoint newPoint = new EggWaypoint(eggFoundPacket.type, eggFoundPacket.island, eggFoundPacket.coords, false);
         newPoint.register();

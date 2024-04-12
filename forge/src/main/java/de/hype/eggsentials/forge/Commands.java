@@ -1,7 +1,7 @@
 package de.hype.eggsentials.forge;
 
 import de.hype.eggsentials.client.common.chat.Chat;
-import de.hype.eggsentials.client.common.client.BBsentials;
+import de.hype.eggsentials.client.common.client.Eggsentials;
 import de.hype.eggsentials.client.common.mclibraries.EnvironmentCore;
 import de.hype.eggsentials.client.common.mclibraries.MCCommand;
 import de.hype.eggsentials.environment.packetconfig.AbstractPacket;
@@ -12,7 +12,7 @@ import net.minecraftforge.client.ClientCommandHandler;
 
 public class Commands implements MCCommand {
     public static <T extends AbstractPacket> void sendPacket(T packet) {
-        BBsentials.connection.sendPacket(packet);
+        Eggsentials.connection.sendPacket(packet);
     }
 
     public void registerMain() {
@@ -42,7 +42,7 @@ public class Commands implements MCCommand {
 
     public void splashAnnounce(int hubNumber, String locationInHub, String extramessage, boolean lessWaste) {
         try {
-            sendPacket(new SplashNotifyPacket(new SplashData(BBsentials.generalConfig.getUsername(), hubNumber, locationInHub, EnvironmentCore.utils.getCurrentIsland(), extramessage, lessWaste)));
+            sendPacket(new SplashNotifyPacket(new SplashData(Eggsentials.generalConfig.getUsername(), hubNumber, locationInHub, EnvironmentCore.utils.getCurrentIsland(), extramessage, lessWaste)));
         } catch (Exception e) {
             Chat.sendPrivateMessageToSelfError(e.getMessage());
         }

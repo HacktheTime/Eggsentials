@@ -51,7 +51,7 @@ public abstract class CustomItemTooltip<T extends ScreenHandler> extends Screen 
 
 //    @Inject(method = "render", at = @At("RETURN"))
 //    public void render(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
-//        if (BBsentials.splashConfig.smallestHubName == null) return;
+//        if (Eggsentials.splashConfig.smallestHubName == null) return;
 //        context.drawText(textRenderer, getSmallestHubText(), 10, 50, 16777215, false);
 //    }
 

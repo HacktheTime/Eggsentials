@@ -2,7 +2,7 @@ package de.hype.eggsentials.fabric.numpad;
 
 import de.hype.eggsentials.client.common.api.Formatting;
 import de.hype.eggsentials.client.common.chat.Chat;
-import de.hype.eggsentials.client.common.client.BBsentials;
+import de.hype.eggsentials.client.common.client.Eggsentials;
 import de.hype.eggsentials.client.common.mclibraries.EnvironmentCore;
 
 import java.util.ArrayList;
@@ -51,7 +51,7 @@ public class NumCode {
     }
 
     public void execute() {
-        if (!BBsentials.generalConfig.hasBBRoles(requiredPermission)) {
+        if (!Eggsentials.generalConfig.hasBBRoles(requiredPermission)) {
             Chat.sendPrivateMessageToSelfError("You don't have the required permissions to run '" + code + "' ! (Required: '" + requiredPermission + "')");
             return;
         }
@@ -72,7 +72,7 @@ public class NumCode {
                     }
                 }
                 else
-                    BBsentials.sender.addHiddenSendTask(commands.get(i), commandDelay.get(i));
+                    Eggsentials.sender.addHiddenSendTask(commands.get(i), commandDelay.get(i));
             }
         }
         else {
@@ -81,7 +81,7 @@ public class NumCode {
                 return;
             }
             try {
-                BBsentials.executionService.execute(toPerform);
+                Eggsentials.executionService.execute(toPerform);
             } catch (Exception e) {
                 Chat.sendPrivateMessageToSelfError(e.getMessage());
                 e.printStackTrace();

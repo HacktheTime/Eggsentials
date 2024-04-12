@@ -44,6 +44,6 @@ public class EggWaypoint extends Waypoints {
      * Puts itself at the right place in the map
      */
     public void register() {
-        BBsentials.islandEggMap.getOrDefault(island, new HashMap<>()).put(EggType.FAIRY_SOUL, this);
+        Eggsentials.islandEggMap.getOrDefault(island, new HashMap<>()).put(EggType.FAIRY_SOUL, this);
     }
 }

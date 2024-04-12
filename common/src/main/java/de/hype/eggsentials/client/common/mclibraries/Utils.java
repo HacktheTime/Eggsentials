@@ -1,7 +1,7 @@
 package de.hype.eggsentials.client.common.mclibraries;
 
 import de.hype.eggsentials.client.common.chat.Chat;
-import de.hype.eggsentials.client.common.client.BBsentials;
+import de.hype.eggsentials.client.common.client.Eggsentials;
 import de.hype.eggsentials.shared.constants.Islands;
 import de.hype.eggsentials.shared.objects.Position;
 import javazoom.jl.player.advanced.AdvancedPlayer;
@@ -95,7 +95,7 @@ public interface Utils {
             });
 
             clip.open(audioInputStream);
-            if (duration != 0) BBsentials.executionService.schedule(() -> {
+            if (duration != 0) Eggsentials.executionService.schedule(() -> {
                 try {
                     clip.stop();
                     clip.close();
@@ -127,7 +127,7 @@ public interface Utils {
                 }
             });
             if (durationinSeconds != 0) {
-                BBsentials.executionService.schedule(() -> {
+                Eggsentials.executionService.schedule(() -> {
                     try {
                         player.stop();
                         player.close();

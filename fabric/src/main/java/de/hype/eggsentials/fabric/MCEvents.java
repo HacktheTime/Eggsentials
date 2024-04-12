@@ -1,7 +1,7 @@
 package de.hype.eggsentials.fabric;
 
 import de.hype.eggsentials.client.common.chat.Chat;
-import de.hype.eggsentials.client.common.client.BBsentials;
+import de.hype.eggsentials.client.common.client.Eggsentials;
 import de.hype.eggsentials.client.common.config.constants.ClickableArmorStand;
 import de.hype.eggsentials.client.common.mclibraries.EnvironmentCore;
 import de.hype.eggsentials.shared.objects.Position;
@@ -76,7 +76,7 @@ public class MCEvents implements de.hype.eggsentials.client.common.mclibraries.M
     @Override
     public void registerUseClick() {
         UseEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
-                    BBsentials.executionService.execute(() -> {
+            Eggsentials.executionService.execute(() -> {
                         onArmorstandInteraction(player, world, hand, entity, hitResult);
                     });
                     return ActionResult.PASS;
@@ -94,7 +94,7 @@ public class MCEvents implements de.hype.eggsentials.client.common.mclibraries.M
                         Chat.sendPrivateMessageToSelfSuccess(armorStand.toString() + " was clicked");
                     //TODO add code is here
                     BlockPos pos = entity.getBlockPos();
-                    BBsentials.addEggToIsland(EnvironmentCore.utils.getCurrentIsland(), armorStand.getAsEgg(), new Position(pos.getX(), pos.getY() + 2, pos.getZ()));
+                    Eggsentials.addEggToIsland(EnvironmentCore.utils.getCurrentIsland(), armorStand.getAsEgg(), new Position(pos.getX(), pos.getY() + 2, pos.getZ()));
                 }
             });
         }

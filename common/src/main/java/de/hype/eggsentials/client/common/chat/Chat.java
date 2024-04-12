@@ -1,7 +1,7 @@
 package de.hype.eggsentials.client.common.chat;
 
 import de.hype.eggsentials.client.common.api.Formatting;
-import de.hype.eggsentials.client.common.client.BBsentials;
+import de.hype.eggsentials.client.common.client.Eggsentials;
 import de.hype.eggsentials.client.common.mclibraries.EnvironmentCore;
 
 import java.io.IOException;
@@ -155,15 +155,15 @@ public class Chat {
     }
 
     public static void sendCommand(String s) {
-        BBsentials.sender.addSendTask(s);
+        Eggsentials.sender.addSendTask(s);
     }
 
     public Message onEvent(Message text, boolean actionbar) {
         if (!actionbar && !isSpam(text.getString())) {
-            if (BBsentials.developerConfig.isDetailedDevModeEnabled()) {
+            if (Eggsentials.developerConfig.isDetailedDevModeEnabled()) {
                 System.out.println("got a message: " + text.getJson());
             }
-            BBsentials.executionService.execute(() -> processThreaded(text));
+            Eggsentials.executionService.execute(() -> processThreaded(text));
             return processNotThreaded(text, actionbar);
         }
         return text; // Return the original message if it is spam
@@ -206,7 +206,7 @@ public class Chat {
     }
 
     public void sendNotification(String title, String text, float volume) {
-        BBsentials.executionService.execute(() -> {
+        Eggsentials.executionService.execute(() -> {
             EnvironmentCore.utils.playCustomSound("/sounds/mixkit-sci-fi-confirmation-914.wav", 0);
         });
         List<String> argsList = new ArrayList<>();

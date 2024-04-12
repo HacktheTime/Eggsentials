@@ -38,7 +38,7 @@ public abstract class BBsentialsConfig {
 
     private void doVersionCheck() {
         if (configVersionCurrent > shouldBeConfigVersion) {
-            throw new RuntimeException("BBsentials Error: Your Config Version is newer than the current mod version supports! This is NOT supported. If you want to continue, please remove your current configs!");
+            throw new RuntimeException("Eggsentials Error: Your Config Version is newer than the current mod version supports! This is NOT supported. If you want to continue, please remove your current configs!");
         }
         else if (configVersionCurrent != shouldBeConfigVersion) {
             ModUpdateHelper.updateConfig(configVersionCurrent, shouldBeConfigVersion, this.getClass(), this);
