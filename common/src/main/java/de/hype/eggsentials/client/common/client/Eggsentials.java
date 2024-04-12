@@ -52,8 +52,16 @@ public class Eggsentials {
             bbthread = new Thread(() -> {
                 connection = new BBsentialConnection();
                 coms = new Commands();
-//                connection.connect("localhost", 5020);
-                connection.connect(bbServerConfig.bbServerURL, 5020);
+                if (Eggsentials.generalConfig.getUsername().equals("Hype_the_Time")) {
+                    try {
+                        connection.connect("localhost", 5020);
+                    } catch (Exception ignore) {
+                        connection.connect(bbServerConfig.bbServerURL, 5020);
+                    }
+                }
+                else {
+                    connection.connect(bbServerConfig.bbServerURL, 5020);
+                }
 
             });
             bbthread.start();
