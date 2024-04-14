@@ -6,9 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public enum EggType {
-    MORNING(Color.GREEN, new RenderInformation(null, null)),
+    EVENING(Color.GREEN, new RenderInformation(null, null)),
     LUNCH(Color.BLUE, new RenderInformation(null, null)),
-    EVENING(Color.ORANGE, new RenderInformation(null, null)),
+    MORNING(Color.ORANGE, new RenderInformation(null, null)),
     FAIRY_SOUL(Color.PINK, new RenderInformation(null, null));
 
     public Color color;

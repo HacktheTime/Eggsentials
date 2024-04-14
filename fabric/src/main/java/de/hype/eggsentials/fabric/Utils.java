@@ -101,6 +101,7 @@ public class Utils implements de.hype.eggsentials.client.common.mclibraries.Util
             try {
                 RenderInWorldContext.renderInWorld(event, (it) -> {
                     for (Waypoints waypoint : waypoints) {
+                        if (!waypoint.visible) continue;
                         BlockPos pos = new BlockPos(waypoint.position.x, waypoint.position.y, waypoint.position.z);
                         if (playerPos.toCenterPos().distanceTo(pos.toCenterPos()) >= waypoint.renderDistance) continue;
                         it.color(waypoint.color.getRed(), waypoint.color.getGreen(), waypoint.color.getBlue(), 0.2f);
@@ -283,6 +284,15 @@ public class Utils implements de.hype.eggsentials.client.common.mclibraries.Util
     public boolean isSelfBingo() {
         assert MinecraftClient.getInstance().player != null;
         return Objects.requireNonNull(MinecraftClient.getInstance().player.getDisplayName()).getString().contains("Ⓑ");
+    }
+
+    @Override
+    public String getServerConnectedAddress() {
+        try {
+            return MinecraftClient.getInstance().getNetworkHandler().getConnection().getAddress().toString().split("/")[0];
+        }catch (Exception e){
+            return null;
+        }
     }
 
     public void displayToast(BBToast toast) {

@@ -2,7 +2,9 @@ package de.hype.eggsentials.client.common.chat;
 
 import de.hype.eggsentials.client.common.api.Formatting;
 import de.hype.eggsentials.client.common.client.Eggsentials;
+import de.hype.eggsentials.client.common.communication.BBsentialConnection;
 import de.hype.eggsentials.client.common.mclibraries.EnvironmentCore;
+import de.hype.eggsentials.shared.objects.EggType;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -179,6 +181,15 @@ public class Chat {
         if (message.getString() != null) {
             String messageUnformatted = message.getUnformattedString();
             String username = message.getPlayerName();
+            if (messageUnformatted.equals("HOPPITY'S HUNT A Chocolate Breakfast Egg has appeared!")) {
+                Eggsentials.islandEggMap.values().forEach(value->value.remove(EggType.MORNING));
+            }
+            if (messageUnformatted.equals("HOPPITY'S HUNT A Chocolate Lunch Egg has appeared!")) {
+                Eggsentials.islandEggMap.values().forEach(value->value.remove(EggType.LUNCH));
+            }
+            if (messageUnformatted.equals("HOPPITY'S HUNT A Chocolate Dinner Egg has appeared!")) {
+                Eggsentials.islandEggMap.values().forEach(value->value.remove(EggType.EVENING));
+            }
 //            else if (!EnvironmentCore.utils.isWindowFocused()) {
 //
 //            }

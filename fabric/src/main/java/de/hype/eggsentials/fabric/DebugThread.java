@@ -148,9 +148,9 @@ public class DebugThread extends de.hype.eggsentials.client.common.client.DebugT
                     if (entity instanceof ArmorStandEntity){
                         for (ItemStack armorItem : ((ArmorStandEntity) entity).getArmorItems()) {
                             if (armorItem.getItem()== Items.PLAYER_HEAD){
-//                                if (!armorItem.getNbt().toString().contains("eyJ0ZXh")){
+                                if (!armorItem.getNbt().toString().contains("eyJ0ZXh")){
                                     possiblyEgg.add(entity);
-//                                }
+                                }
                             }
                         }
                     }
@@ -181,7 +181,7 @@ public class DebugThread extends de.hype.eggsentials.client.common.client.DebugT
                         BlockPos blockPos = entity.getBlockPos();
                         Position pos = new Position(blockPos.getX(), blockPos.getY() + 2, blockPos.getZ());
                         EggWaypoint newPoint = new EggWaypoint(armorStand.getAsEgg(), current, pos, false);
-                        Eggsentials.islandEggMap.getOrDefault(current, new HashMap<>()).put(EggType.FAIRY_SOUL, newPoint);
+                        Eggsentials.islandEggMap.getOrDefault(current, new HashMap<>()).put(armorStand.getAsEgg(), newPoint);
                     }
                 });
             }

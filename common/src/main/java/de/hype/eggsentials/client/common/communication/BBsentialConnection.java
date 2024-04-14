@@ -42,11 +42,13 @@ public class BBsentialConnection {
     public Thread messageSenderThread;
     public List<InterceptPacketInfo> packetIntercepts = new ArrayList();
     public boolean knownDisconnect = false;
+    boolean joinBetaServer = false;
     private Socket socket;
     private BufferedReader reader;
     private PrintWriter writer;
     private LinkedBlockingQueue<String> messageQueue;
     private PacketManager packetManager;
+    //This is not used ik. If i use it this means i can prohibit sending code on the mainserver if on alpha.
 
     public BBsentialConnection() {
         packetManager = new PacketManager(this);
@@ -128,7 +130,7 @@ public class BBsentialConnection {
                 socket = sslSocketFactory.createSocket(serverIP, serverPort);
             }
             else {
-                socket = new Socket("localhost", 5020);
+                socket = new Socket(serverIP, serverPort);
             }
             socket.setKeepAlive(true); // Enable Keep-Alive
             reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -145,6 +147,7 @@ public class BBsentialConnection {
                         }
                         else {
                             Chat.sendPrivateMessageToSelfError("Eggsentials: It seemed like you disconnected.");
+                            Eggsentials.connectToBBserver();
                             try {
                                 Thread.sleep(10000);
                             } catch (Exception e) {
@@ -195,6 +198,9 @@ public class BBsentialConnection {
     }
 
     public <E extends AbstractPacket> void sendPacket(E packet) {
+        if (socket.getPort() == 5030 && EnvironmentCore.utils.getServerConnectedAddress().startsWith("alpha.hypixel.net")) {
+            Chat.sendPrivateMessageToSelfError("A " + packet.getClass().getSimpleName() + " was canceled because you were not connected to the mods test server and on Hypixels Alpha Server.");
+        }
         String packetName = packet.getClass().getSimpleName();
         String rawjson = PacketUtils.parsePacketToJson(packet);
         if (isConnected() && writer != null) {

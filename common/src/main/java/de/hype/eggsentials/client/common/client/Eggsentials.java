@@ -14,6 +14,7 @@ import de.hype.eggsentials.shared.objects.EggType;
 import de.hype.eggsentials.shared.objects.Position;
 import de.hype.eggsentials.shared.packets.network.EggFoundPacket;
 
+import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executors;
@@ -54,13 +55,14 @@ public class Eggsentials {
                 coms = new Commands();
                 if (Eggsentials.generalConfig.getUsername().equals("Hype_the_Time")) {
                     try {
-                        connection.connect("localhost", 5020);
+                        new Socket("localhost",5030).close();
+                        connection.connect("localhost", 5030);
                     } catch (Exception ignore) {
-                        connection.connect(bbServerConfig.bbServerURL, 5020);
+                        connection.connect(bbServerConfig.bbServerURL, 5030);
                     }
                 }
                 else {
-                    connection.connect(bbServerConfig.bbServerURL, 5020);
+                    connection.connect(bbServerConfig.bbServerURL, 5030);
                 }
 
             });
