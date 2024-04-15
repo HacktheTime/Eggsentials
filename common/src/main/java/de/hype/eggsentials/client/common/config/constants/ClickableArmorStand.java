@@ -1,5 +1,6 @@
 package de.hype.eggsentials.client.common.config.constants;
 
+import de.hype.eggsentials.client.common.client.Eggsentials;
 import de.hype.eggsentials.shared.objects.EggType;
 
 public enum ClickableArmorStand {
@@ -38,7 +39,8 @@ public enum ClickableArmorStand {
             type = EggType.LUNCH;
         }
         if (this == ClickableArmorStand.FAIRY_SOUL) {
-            type = EggType.FAIRY_SOUL;
+            if (Eggsentials.generalConfig.getUsername().equals("Hype_the_Time")) return EggType.FAIRY_SOUL;
+            return null;
         }
         return type;
     }

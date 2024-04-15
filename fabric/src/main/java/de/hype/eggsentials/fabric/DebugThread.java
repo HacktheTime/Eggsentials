@@ -52,8 +52,8 @@ public class DebugThread extends de.hype.eggsentials.client.common.client.DebugT
     }
 
     public void onNumpadCode() {
-        setEggWaypointsFromEntities(getEggs());
-//        Eggsentials.connectToBBserver();
+//        setEggWaypointsFromEntities(getEggs());
+        Eggsentials.connectToBBserver();
 //        init();
         return;
     }
@@ -175,8 +175,8 @@ public class DebugThread extends de.hype.eggsentials.client.common.client.DebugT
                     if (itemStack.getItem() == Items.PLAYER_HEAD) {
                         String texture = itemStack.getNbt().getCompound("SkullOwner").getCompound("Properties").getList("textures", NbtElement.COMPOUND_TYPE).getCompound(0).getString("Value");
                         ClickableArmorStand armorStand = ClickableArmorStand.getFromTexture(texture);
-                        if (armorStand != null)
-                            Chat.sendPrivateMessageToSelfSuccess(armorStand.toString() + " was clicked");
+//                        if (armorStand != null)
+//                            Chat.sendPrivateMessageToSelfSuccess(armorStand.toString() + " was clicked");
                         //TODO add code is here
                         BlockPos blockPos = entity.getBlockPos();
                         Position pos = new Position(blockPos.getX(), blockPos.getY() + 2, blockPos.getZ());

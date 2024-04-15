@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
-  "id": "bbsentials",
+  "id": "eggsentials",
   "version": "${version}",
-  "name": "BBsentials",
+  "name": "Eggsentials",
   "icon": "logo.png",
-  "description": "Mod to connect to the BBsentials Network for the Choclate EGG event",
+  "description": "Mod to connect to the BBsentials:Eggsentials Network for the Choclate EGG event",
   "authors": [
     "Hype_the_Time/hackthetime"
   ],
@@ -37,7 +37,7 @@
     "modmenu": {
       "links": {
         "License": "https://github.com/HacktheTime/Eggsentials/blob/master/LICENSE",
-        "modmenu.discord": "discord.gg/hg9HgJGkxV"
+        "modmenu.discord": "https://discord.gg/APj7sw84rm"
       },
       "update_checker": true
     }

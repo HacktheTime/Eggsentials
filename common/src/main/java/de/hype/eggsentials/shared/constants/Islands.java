@@ -26,6 +26,7 @@ public enum Islands implements BBDisplayNameProvider {
     DUNGEON_HUB("dungeon_hub", "Dungeon Hub"),
     DWARVEN_MINES("mining_3", "Dwarven Mines"),
     GOLD_MINE("mining_1", "Gold Mine"),
+    GLACITE_TUNNEL("mineshaft","Mineshaft"),
     HUB("hub", "Hub"),
     KUUDRA("kuudra", "Kuudra"),
     PRIVATE_ISLAND("dynamic", "Private Island"),

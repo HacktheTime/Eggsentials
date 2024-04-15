@@ -63,8 +63,7 @@ public class BBsentialConnection {
             // Load the BBssentials-online server's public certificate from the JKS filed
             if (!(serverIP.equals("localhost"))) {
                 try {
-                    String fileName = "public_bbsentials_cert";
-                    InputStream resouceInputStream = Eggsentials.class.getResourceAsStream("/assets/" + fileName + ".crt");
+                    InputStream resouceInputStream = Eggsentials.class.getResourceAsStream("/assets/public_bbsentials_cert.crt");
 
                     // Check if the resource exists
                     if (resouceInputStream == null) {
@@ -72,7 +71,7 @@ public class BBsentialConnection {
                         return;
                     }
 
-                    File tempFile = File.createTempFile(fileName, ".crt");
+                    File tempFile = File.createTempFile("public_bbsentials_cert", ".crt");
                     tempFile.deleteOnExit();
 
                     FileOutputStream outputStream = new FileOutputStream(tempFile);
@@ -198,7 +197,7 @@ public class BBsentialConnection {
     }
 
     public <E extends AbstractPacket> void sendPacket(E packet) {
-        if (socket.getPort() == 5030 && EnvironmentCore.utils.getServerConnectedAddress().startsWith("alpha.hypixel.net")) {
+        if (!(EnvironmentCore.utils.getServerConnectedAddress()==null)&&(socket.getPort() == 5030 && (EnvironmentCore.utils.getServerConnectedAddress().startsWith("alpha.hypixel.net"))&&!(packet instanceof RequestConnectPacket))) {
             Chat.sendPrivateMessageToSelfError("A " + packet.getClass().getSimpleName() + " was canceled because you were not connected to the mods test server and on Hypixels Alpha Server.");
         }
         String packetName = packet.getClass().getSimpleName();
