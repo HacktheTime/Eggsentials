@@ -4,11 +4,11 @@
   "version": "${version}",
   "name": "Eggsentials",
   "icon": "logo.png",
-  "description": "Mod to connect to the BBsentials:Eggsentials Network for the Choclate EGG event",
+  "description": "Mod to connect to the BBsentials:Eggsentials Network for the Chocolate EGG event",
   "authors": [
-    "Hype_the_Time/hackthetime"
+    "Hype_the_Time/hackthetime - MOST things"
   ],
-  "contributors": ["hannibal2","nea89"],
+  "contributors": ["hannibal2 - help with logic on packet handling","nea89 - render related code (waypoints, ...) and build configurations","ic22487 - textures"],
   "contact": {
     "homepage": "https://github.com/HacktheTime/Eggsentials",
     "issues": "https://github.com/HacktheTime/Eggsentials.20/issues",

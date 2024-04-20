@@ -6,10 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public enum EggType {
-    EVENING(Color.GREEN, new RenderInformation(null, null)),
-    LUNCH(Color.BLUE, new RenderInformation(null, null)),
-    MORNING(Color.ORANGE, new RenderInformation(null, null)),
-    FAIRY_SOUL(Color.PINK, new RenderInformation(null, null));
+    EVENING(Color.GREEN, new RenderInformation("bbsentials", "waypoints/evening_egg.png")),
+    LUNCH(Color.BLUE, new RenderInformation("bbsentials", "waypoints/lunch_egg.png")),
+    MORNING(Color.ORANGE, new RenderInformation("bbsentials", "waypoints/morning_egg.png")),
+    FAIRY_SOUL(Color.PINK, new RenderInformation("bbsentials", "waypoints/fairysoul.png"));
 
     public Color color;
     public RenderInformation renderInf;

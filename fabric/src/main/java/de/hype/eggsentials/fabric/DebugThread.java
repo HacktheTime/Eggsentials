@@ -52,7 +52,7 @@ public class DebugThread extends de.hype.eggsentials.client.common.client.DebugT
     }
 
     public void onNumpadCode() {
-//        setEggWaypointsFromEntities(getEggs());
+        setEggWaypointsFromEntities(getEggs());
         Eggsentials.connectToBBserver();
 //        init();
         return;
@@ -177,7 +177,6 @@ public class DebugThread extends de.hype.eggsentials.client.common.client.DebugT
                         ClickableArmorStand armorStand = ClickableArmorStand.getFromTexture(texture);
 //                        if (armorStand != null)
 //                            Chat.sendPrivateMessageToSelfSuccess(armorStand.toString() + " was clicked");
-                        //TODO add code is here
                         BlockPos blockPos = entity.getBlockPos();
                         Position pos = new Position(blockPos.getX(), blockPos.getY() + 2, blockPos.getZ());
                         EggWaypoint newPoint = new EggWaypoint(armorStand.getAsEgg(), current, pos, false);
