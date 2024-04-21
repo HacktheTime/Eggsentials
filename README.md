@@ -1,5 +1,6 @@
 [![Discord](https://img.shields.io/discord/1227616718101155912?style=plastic&logo=discord)](https://discord.gg/APj7sw84rm)
-[![Modrinth](https://img.shields.io/modrinth/dt/Cp13oI7e?style=plastic&logo=modrinth)](https://modrinth.com/mod/eggsentials) I expect to use this but that is not on modrinth just yet
+[![Modrinth](https://img.shields.io/modrinth/dt/eggsentials?style=plastic&logo=modrinth
+)](https://modrinth.com/mod/eggsentials)
 [![Github Releases](https://img.shields.io/github/downloads/HacktheTime/BBsentials/total?style=plastic&logo=github)](https://github.com/HacktheTime/bbsentials/releases)
 
 # eggsentials
@@ -15,7 +16,7 @@ Recent: mod menu, cloth config, fabric api
 Currently known Problems:
 
 - There is no 1.8.9 mod
-   - Solution: idc about 1.8.9
+   - Solution: Skyhanni
 - Waypoints are sometimes just incredibly bright
     - Im aware that waypoints get brighter the later they are rendered. This is a bug in the rendering code i copied from a different project of mine but which is not originally by myself. Im not great for Rendering Code and stay simple with it usually.
 - It breaks on other Servers
