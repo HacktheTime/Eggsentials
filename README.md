@@ -1,5 +1,10 @@
+# This Project is archived due too Skyhanni adding those features anyway. This would require wide spread so there is no point in continuing. If there is a unfilled niche where it has a good value Ill pick it back up but still not develop it as far as Skyhannis features go probably.
+
+
+
+
 [![Discord](https://img.shields.io/discord/1227616718101155912?style=plastic&logo=discord)](https://discord.gg/APj7sw84rm)
-[![Modrinth](https://img.shields.io/modrinth/dt/Cp13oI7e?style=plastic&logo=modrinth)](https://modrinth.com/mod/eggsentials) I expect to use this but that is not on modrinth just yet
+[![Modrinth](https://img.shields.io/modrinth/dt/eggsentials?style=plastic&logo=modrinth)](https://modrinth.com/mod/eggsentials) I expect to use this but that is not on modrinth just yet
 [![Github Releases](https://img.shields.io/github/downloads/HacktheTime/BBsentials/total?style=plastic&logo=github)](https://github.com/HacktheTime/bbsentials/releases)
 
 # eggsentials
