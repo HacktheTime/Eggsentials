@@ -4,7 +4,8 @@
 
 
 [![Discord](https://img.shields.io/discord/1227616718101155912?style=plastic&logo=discord)](https://discord.gg/APj7sw84rm)
-[![Modrinth](https://img.shields.io/modrinth/dt/eggsentials?style=plastic&logo=modrinth)](https://modrinth.com/mod/eggsentials) I expect to use this but that is not on modrinth just yet
+[![Modrinth](https://img.shields.io/modrinth/dt/eggsentials?style=plastic&logo=modrinth
+)](https://modrinth.com/mod/eggsentials)
 [![Github Releases](https://img.shields.io/github/downloads/HacktheTime/BBsentials/total?style=plastic&logo=github)](https://github.com/HacktheTime/bbsentials/releases)
 
 # eggsentials
