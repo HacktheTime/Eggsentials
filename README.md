@@ -15,7 +15,7 @@ Recent: mod menu, cloth config, fabric api
 Currently known Problems:
 
 - There is no 1.8.9 mod
-   - Solution: idc about 1.8.9
+   - Solution: Skyhanni
 - Waypoints are sometimes just incredibly bright
     - Im aware that waypoints get brighter the later they are rendered. This is a bug in the rendering code i copied from a different project of mine but which is not originally by myself. Im not great for Rendering Code and stay simple with it usually.
 - It breaks on other Servers
